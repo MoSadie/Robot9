@@ -8,14 +8,13 @@ import java.io.IOException;
 import java.util.Properties;
 
 import Team4450.Lib.*;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.vision.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
@@ -36,7 +35,6 @@ public class Robot extends SampleRobot
   final Joystick        leftStick = new Joystick(0);	// 1
   final Joystick        rightStick = new Joystick(1);	// 2
   final Joystick		launchPad = new Joystick(3);
-  final Joystick		gamePad = new Joystick(4);
   final Compressor		compressor = new Compressor(0);
 
   public Properties		robotProperties;
@@ -139,8 +137,8 @@ public class Robot extends SampleRobot
      
    		// Start thread to monitor distance sensor.
    		
-   		monitorDistanceThread = new MonitorDistanceMBX(this);
-   		monitorDistanceThread.start();
+   		//monitorDistanceThread = new MonitorDistanceMBX(this);
+   		//monitorDistanceThread.start();
             
    		Util.consoleLog("end");
     }
