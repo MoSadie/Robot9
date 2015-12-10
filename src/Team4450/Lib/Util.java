@@ -208,7 +208,7 @@ public class Util
     
         try
         {
-        	return stackTrace[level].toString().split("RobotNAN.")[1];
+        	return stackTrace[level].toString().split("Robot9.")[1];
         }
         catch (Throwable e)
         {
