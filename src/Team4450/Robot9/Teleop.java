@@ -6,7 +6,7 @@ import java.lang.Math;
 import Team4450.Lib.*;
 import Team4450.Lib.JoyStick.*;
 import Team4450.Lib.LaunchPad.*;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -59,6 +59,8 @@ class Teleop
 		lpControl.controlType = LaunchPadControlTypes.SWITCH;
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ONE);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_EIGHT);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ELEVEN);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_FIVE);
         launchPad.addLaunchPadEventListener(new LaunchPadListener());
         launchPad.Start();
 
@@ -135,6 +137,15 @@ class Teleop
 			{
 				((Teleop) launchPadEvent.getSource()).powerFactor = 0.5;
 				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
+			}
+			//Test Error Report Function
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_ELEVEN)
+			{
+				DriverStation.reportError("Button Pressed!!!!11", false);
+				Util.consoleLog("Reported Small Error");
+			}
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_FIVE) {
+				DriverStation.reportError("Button Pressed!!!!5", true);
 			}
 	    }
 	    
