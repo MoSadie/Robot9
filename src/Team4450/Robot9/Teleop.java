@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 class Teleop
 {
-	private final 		Robot robot;
-	private 			double powerFactor = 1.0;
+	private final Robot robot;
+	private double		powerFactor = 1.0;
 	private JoyStick	rightStick, leftStick, utilityStick;
 	private LaunchPad	launchPad;
 	
