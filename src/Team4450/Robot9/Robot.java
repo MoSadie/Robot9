@@ -109,7 +109,14 @@ public class Robot extends SampleRobot
       
    		PowerDistributionPanel PDP = new PowerDistributionPanel();
    		PDP.clearStickyFaults();
-     
+   		
+   		//Check the Joysticks connected to the DS
+   		
+   		//if (leftStick.getName() != "NAMEOFJOYSTICK0") {Util.consoleLog("Wrong Joystick 0 Found. Expected NAMEOFJOYSTICK0, got " + leftStick.getName());}
+   		//if (rightStick.getName() != "NAMEOFJOYSTICK1") {Util.consoleLog("Wrong Joystick 1 Found. Expected NAMEOFJOYSTICK1, got " + rightStick.getName());}
+   		//if (utilityStick.getName() != "NAMEOFJOYSTICK2") {Util.consoleLog("Wrong Joystick 2 Found. Expected NAMEOFJOYSTICK2, got " + utilityStick.getName());}
+   		//if (launchpad.getName() != "NAMEOFJOYSTICK3") {Util.consoleLog("Wrong Joystick 3 Found. Expected NAMEOFJOYSTICK3, got " + launchpad.getName());}
+   		
    		// Set starting camera feed on driver station to USB-HW.
       
    		SmartDashboard.putNumber("CameraSelect", USB_CAMERA);
