@@ -16,6 +16,7 @@ class Teleop
 	private double		powerFactor = 1.0;
 	private JoyStick	rightStick, leftStick, utilityStick;
 	private LaunchPad	launchPad;
+	airTesting airTest;
 	
 	// Constructor.
 	
@@ -76,8 +77,13 @@ class Teleop
         rightStick.Start();
         
 		utilityStick = new JoyStick(robot.utilityStick, "UtilityStick", JoyStickButtonIDs.TOP_LEFT, this);
+		utilityStick.AddButton(JoyStickButtonIDs.TRIGGER);
         utilityStick.addJoyStickEventListener(new UtilityStickListener());
         utilityStick.Start();
+        
+        //Prototyping Cannon Testing Code
+        airTest = new airTesting(this.robot,10000,false); //Robot, port, is DA
+        
         
         // Motor safety turned on.
         robot.robotDrive.setSafetyEnabled(true);
@@ -240,6 +246,14 @@ class Teleop
 	    public void ButtonDown(JoyStickEvent joyStickEvent) 
 	    {
 			Util.consoleLog("%s, latchedState=%b", joyStickEvent.button.id.name(),  joyStickEvent.button.latchedState);
+			
+			//Changes State of the piston
+			
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
+				if (joyStickEvent.button.latchedState)
+					airTest.Open();
+				else
+					airTest.Close();
 			
 			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
 			
