@@ -112,10 +112,10 @@ public class Robot extends SampleRobot
    		
    		//Check the Joysticks connected to the DS
    		
-   		//if (leftStick.getName() != "NAMEOFJOYSTICK0") {Util.consoleLog("Wrong Joystick 0 Found. Expected NAMEOFJOYSTICK0, got " + leftStick.getName());}
-   		//if (rightStick.getName() != "NAMEOFJOYSTICK1") {Util.consoleLog("Wrong Joystick 1 Found. Expected NAMEOFJOYSTICK1, got " + rightStick.getName());}
-   		//if (utilityStick.getName() != "NAMEOFJOYSTICK2") {Util.consoleLog("Wrong Joystick 2 Found. Expected NAMEOFJOYSTICK2, got " + utilityStick.getName());}
-   		//if (launchpad.getName() != "NAMEOFJOYSTICK3") {Util.consoleLog("Wrong Joystick 3 Found. Expected NAMEOFJOYSTICK3, got " + launchpad.getName());}
+   		if (leftStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());}
+   		if (rightStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());}
+   		if (utilityStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());}
+   		if (launchPad.getName() != "MSP430-USB Gamepad") {Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());}
    		
    		// Set starting camera feed on driver station to USB-HW.
       
