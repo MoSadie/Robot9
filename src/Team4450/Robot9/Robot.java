@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-12.01.15-01";
+  static final String  	PROGRAM_NAME = "SWF9-1.15.16-02";
 
   // Motor pwm port assignments (0=front-left, 1=rear-left, 2=front-right, 3=rear-right)
   final RobotDrive      robotDrive = new RobotDrive(0,1,2,3);
@@ -108,14 +108,7 @@ public class Robot extends SampleRobot
    		// Reset PDB sticky faults.
       
    		PowerDistributionPanel PDP = new PowerDistributionPanel();
-   		PDP.clearStickyFaults();
-   		
-   		//Check the Joysticks connected to the DS
-   		
-   		if (leftStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());}
-   		if (rightStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());}
-   		if (utilityStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());}
-   		if (launchPad.getName() != "MSP430-USB Gamepad") {Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());}
+   		PDP.clearStickyFaults();	
    		
    		// Set starting camera feed on driver station to USB-HW.
       
@@ -226,7 +219,14 @@ public class Robot extends SampleRobot
         
           // This code turns off the automatic compressor management if requested by DS.
           compressor.setClosedLoopControl(SmartDashboard.getBoolean("CompressorEnabled", true));
-        
+          
+          //Check the Joysticks connected to the DS
+     		
+     		if (leftStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());}
+     		if (rightStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());}
+     		if (utilityStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());}
+     		if (launchPad.getName() != "MSP430-USB Gamepad") {Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());}
+     		
           // Start operator control process contained in the MyTeleop class.
         
           Teleop teleOp = new Teleop(this);
