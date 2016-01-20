@@ -9,18 +9,20 @@ public class airTesting {
 	FestoDA fda;
 	FestoSA fsa;
 	
-	public airTesting (Robot Robot, int Port, boolean Da)
+	public airTesting (Robot Robot, int Port, boolean PutHereIfDa)
 	{
 		robot = Robot;
 		port = Port;
-		da = Da;
-		if (da == true) {
-			fda = new FestoDA(port);
-		}
-		else if (da == false) {
-			fsa = new FestoSA(port);
-		}
-		else {Util.consoleLog("airTest Error: Not valid da value: " + da);}
+		da = PutHereIfDa;
+		fda = new FestoDA(port);
+	}
+	
+	public airTesting (Robot Robot, int Port)
+	{
+		robot = Robot;
+		port = Port;
+		da = false;
+		fsa = new FestoSA(port);
 	}
 	
 	public void dispose() {

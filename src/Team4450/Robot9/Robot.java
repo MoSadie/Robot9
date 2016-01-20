@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -27,10 +28,16 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-1.15.16-02";
-
-  // Motor pwm port assignments (0=front-left, 1=rear-left, 2=front-right, 3=rear-right)
-  final RobotDrive      robotDrive = new RobotDrive(0,1,2,3);
+  static final String  	PROGRAM_NAME = "SWF9-1.19.16-04";
+  
+  //Create CANTalon s for each motor controller
+  final CANTalon left_front = new CANTalon(1);
+  final CANTalon left_rear = new CANTalon(2);
+  final CANTalon right_front = new CANTalon(3);
+  final CANTalon right_rear = new CANTalon(4);
+  
+  // Motor CAN port assignments (1=front-left, 2=rear-left, 3=front-right, 4=rear-right)
+  final RobotDrive      robotDrive = new RobotDrive(left_front,left_rear,right_front,right_rear);
   final Joystick        utilityStick = new Joystick(2);	// 0 old ds configuration
   final Joystick        leftStick = new Joystick(0);	// 1
   final Joystick        rightStick = new Joystick(1);	// 2
@@ -222,10 +229,22 @@ public class Robot extends SampleRobot
           
           //Check the Joysticks connected to the DS
      		
-     		if (leftStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());}
-     		if (rightStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());}
-     		if (utilityStick.getName() != "Logitech Attack 3") {Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());}
-     		if (launchPad.getName() != "MSP430-USB Gamepad") {Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());}
+     		//if (leftStick.getName() != "Logitech Attack 3") {
+     		//	Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());
+     		//	DriverStation.reportError("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName(), false);
+     		//	}
+     		//if (rightStick.getName() != "Logitech Attack 3") {
+     		//	Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());
+     		//	DriverStation.reportError("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName(), false);
+     		//}
+     		//if (utilityStick.getName() != "Logitech Attack 3") {
+     		//	Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());
+     		//	DriverStation.reportError("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName(), false);
+     		//	}
+     		//if (launchPad.getName() != "MSP430-USB Gamepad") {
+     		//	Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());
+     		//	DriverStation.reportError("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName(), false);
+     		//	}
      		
           // Start operator control process contained in the MyTeleop class.
         

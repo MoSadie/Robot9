@@ -32,7 +32,7 @@ class Teleop
 	void dispose()
 	{
 		Util.consoleLog();
-		
+		airTest.dispose();
 		if (leftStick != null) leftStick.dispose();
 		if (rightStick != null) rightStick.dispose();
 		if (utilityStick != null) utilityStick.dispose();
@@ -82,7 +82,7 @@ class Teleop
         utilityStick.Start();
         
         //Prototyping Cannon Testing Code
-        airTest = new airTesting(this.robot,10000,false); //Robot, port, is DA
+        airTest = new airTesting(this.robot,1,true); //Robot, port, is DA
         
         
         // Motor safety turned on.
@@ -143,15 +143,6 @@ class Teleop
 			{
 				((Teleop) launchPadEvent.getSource()).powerFactor = 0.5;
 				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
-			}
-			//Test Error Report Function
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_ELEVEN)
-			{
-				DriverStation.reportError("Button Pressed!!!!11", false);
-				Util.consoleLog("Reported Small Error");
-			}
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_FIVE) {
-				DriverStation.reportError("Button Pressed!!!!5", true);
 			}
 	    }
 	    
