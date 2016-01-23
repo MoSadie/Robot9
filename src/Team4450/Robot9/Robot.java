@@ -227,24 +227,12 @@ public class Robot extends SampleRobot
           // This code turns off the automatic compressor management if requested by DS.
           compressor.setClosedLoopControl(SmartDashboard.getBoolean("CompressorEnabled", true));
           
-          //Check the Joysticks connected to the DS
+          //Print the Joysticks connected to the DS
+     		Util.consoleLog("Joystick 0: " + leftStick.getName());
+     		Util.consoleLog("Joystick 1: " + rightStick.getName());
+     		Util.consoleLog("Joystick 2: " + utilityStick.getName());
+     		Util.consoleLog("Joystick 3: " + launchPad.getName());
      		
-     		//if (leftStick.getName() != "Logitech Attack 3") {
-     		//	Util.consoleLog("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName());
-     		//	DriverStation.reportError("Wrong Joystick 0 Found. Expected Logitech Attack 3, got " + leftStick.getName(), false);
-     		//	}
-     		//if (rightStick.getName() != "Logitech Attack 3") {
-     		//	Util.consoleLog("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName());
-     		//	DriverStation.reportError("Wrong Joystick 1 Found. Expected Logitech Attack 3, got " + rightStick.getName(), false);
-     		//}
-     		//if (utilityStick.getName() != "Logitech Attack 3") {
-     		//	Util.consoleLog("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName());
-     		//	DriverStation.reportError("Wrong Joystick 2 Found. Expected Logitech Attack 3, got " + utilityStick.getName(), false);
-     		//	}
-     		//if (launchPad.getName() != "MSP430-USB Gamepad") {
-     		//	Util.consoleLog("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName());
-     		//	DriverStation.reportError("Wrong Joystick 3 Found. Expected MSP430-USB Gamepad, got " + launchPad.getName(), false);
-     		//	}
      		
           // Start operator control process contained in the MyTeleop class.
         
