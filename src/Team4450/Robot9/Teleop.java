@@ -9,6 +9,7 @@ import Team4450.Lib.LaunchPad.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.networktables.*;
 
 class Teleop
 {
@@ -17,6 +18,7 @@ class Teleop
 	private JoyStick	rightStick, leftStick, utilityStick;
 	private LaunchPad	launchPad;
 	airTesting airTest;
+	private NetworkTable grip;
 	
 	// Constructor.
 	
@@ -25,6 +27,7 @@ class Teleop
 		Util.consoleLog();
 
 		this.robot = robot;
+		grip = robot.grip;
 	}
 
 	// Free all objects that need it.
@@ -62,6 +65,7 @@ class Teleop
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_EIGHT);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ELEVEN);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_FIVE);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_BLUE);
         launchPad.addLaunchPadEventListener(new LaunchPadListener());
         launchPad.Start();
 
@@ -143,6 +147,14 @@ class Teleop
 			{
 				((Teleop) launchPadEvent.getSource()).powerFactor = 0.5;
 				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
+			}
+			
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
+				/* Get published values from GRIP using NetworkTables */
+		        for (double centerX : grip.getNumberArray("myContoursReport/centerX", new double[0])) {
+		            System.out.println("Got contour with x=" + centerX);
+		        }
+
 			}
 	    }
 	    

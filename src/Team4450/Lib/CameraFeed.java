@@ -63,9 +63,9 @@ public class CameraFeed extends Thread
     			Util.consoleLog("in clone");
         		try
         		{
-        			cam1 = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        			//cam1 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         		}
-        		catch (Exception e) {}
+        		catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
     		}
     		
     		// trace the camera ids.

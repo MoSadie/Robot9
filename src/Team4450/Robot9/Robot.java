@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-1.19.16-04";
+  static final String  	PROGRAM_NAME = "SWF9-1.23.16-08N";
   
   //Create CANTalon s for each motor controller
   final CANTalon left_front = new CANTalon(1);
@@ -60,6 +61,14 @@ public class Robot extends SampleRobot
   static final String  	CAMERA_IP = "10.44.50.11";
   static final int	   	USB_CAMERA = 2;
   static final int     	IP_CAMERA = 3;
+  
+  //Test GRIP Code
+  private final static String[] GRIP_ARGS = new String[] {
+	        "/usr/local/frc/JRE/bin/java", "-jar",
+	        "/home/lvuser/grip.jar", "/home/lvuser/project.grip" };
+
+  public final NetworkTable grip = NetworkTable.getTable("GRIP");
+
  
   public Robot() throws IOException
   {	
@@ -127,7 +136,7 @@ public class Robot extends SampleRobot
    		// cameraFeed class. The function below is the standard WpiLib server which
    		// can be used for a single usb camera.
       
-   		//StartUSBCameraServer("cam0");
+   		StartUSBCameraServer("cam0");
       
    		// Start the battery, compressor, camera feed and distance monitoring Tasks.
 
@@ -139,13 +148,20 @@ public class Robot extends SampleRobot
 
    		// Start camera server using our class for dual usb cameras.
       
-   		cameraThread = new CameraFeed(this);
-   		cameraThread.start();
+   		//cameraThread = new CameraFeed(this);
+   		//cameraThread.start();
      
    		// Start thread to monitor distance sensor.
    		
    		//monitorDistanceThread = new MonitorDistanceMBX(this);
    		//monitorDistanceThread.start();
+   		
+   		/* Run GRIP in a new process */
+        try {
+            Runtime.getRuntime().exec(GRIP_ARGS);
+        } catch (IOException e) {
+            e.printStackTrace(Util.logPrintStream);
+        }
             
    		Util.consoleLog("end");
     }
