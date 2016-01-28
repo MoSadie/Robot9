@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-1.23.16-08N";
+  static final String  	PROGRAM_NAME = "SWF9-1.25.16-01N";
   
   //Create CANTalon s for each motor controller
   final CANTalon left_front = new CANTalon(1);
@@ -136,7 +136,7 @@ public class Robot extends SampleRobot
    		// cameraFeed class. The function below is the standard WpiLib server which
    		// can be used for a single usb camera.
       
-   		StartUSBCameraServer("cam0");
+   		//StartUSBCameraServer("cam0");
       
    		// Start the battery, compressor, camera feed and distance monitoring Tasks.
 
