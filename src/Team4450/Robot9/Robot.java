@@ -1,6 +1,6 @@
 // 2016 competition robot code.
 // Cleaned up and reorganized in preparation for 2016.
-// For Robot "tba" built for FRC game "tba".
+// For Robot "tba" built for FRC game "First Stronghold".
 
 package Team4450.Robot9;
 
@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import Team4450.Lib.*;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,6 +18,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.CANTalon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -92,7 +92,14 @@ public class Robot extends SampleRobot
     		
         // IP Camera object used for vision processing.
         //camera = AxisCamera.getInstance(CAMERA_IP);
-    		
+        
+        // Initialize CAN Talons and write status to log so we can verify
+        // all the talons are connected.
+        initializeCANTalon(LFTalon);
+        initializeCANTalon(LRTalon);
+        initializeCANTalon(RFTalon);
+        initializeCANTalon(RRTalon);
+        
         robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
         robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
     
@@ -276,5 +283,17 @@ public class Robot extends SampleRobot
 	  usbCameraServer = CameraServer.getInstance();
       usbCameraServer.setQuality(30);
       usbCameraServer.startAutomaticCapture(cameraName);
+  }
+
+  // Initialize and Log status indication from CANTalon. If we see an exception
+  // or a talon has low voltage value, it did not get recognized by the RR on start up.
+  
+  public void initializeCANTalon(CANTalon talon)
+  {
+	  Util.consoleLog("talon init: %s   voltage=%.1f", talon.getDescription(), talon.getBusVoltage());
+
+	  talon.clearStickyFaults();
+	  talon.enableControl();
+	  talon.changeControlMode(TalonControlMode.PercentVbus);
   }
 }

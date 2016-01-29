@@ -61,11 +61,12 @@ public class CameraFeed extends Thread
     		if (robot.robotProperties.getProperty("RobotId").equalsIgnoreCase("clone"))
     		{
     			Util.consoleLog("in clone");
+    			
         		try
         		{
-        			//cam1 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        			cam1 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         		}
-        		catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
+        		catch (Exception e) {}
     		}
     		
     		// trace the camera ids.

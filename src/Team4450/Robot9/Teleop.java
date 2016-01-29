@@ -6,19 +6,20 @@ import java.lang.Math;
 import Team4450.Lib.*;
 import Team4450.Lib.JoyStick.*;
 import Team4450.Lib.LaunchPad.*;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.networktables.*;
 
 class Teleop
 {
-	private final Robot robot;
-	private double		powerFactor = 1.0;
-	private JoyStick	rightStick, leftStick, utilityStick;
-	private LaunchPad	launchPad;
-	airTesting airTest;
-	private NetworkTable grip;
+	private final Robot 		robot;
+	private double				powerFactor = 1.0;
+	private JoyStick			rightStick, leftStick, utilityStick;
+	private LaunchPad			launchPad;
+	private final FestoDA		shifterValve;
+	private final RevDigitBoard	revBoard = new RevDigitBoard();
+	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
 	
 	// Constructor.
 	
@@ -28,6 +29,10 @@ class Teleop
 
 		this.robot = robot;
 		grip = robot.grip;
+		
+		shifterValve = new FestoDA(1);
+		
+		shifterClose();
 	}
 
 	// Free all objects that need it.
@@ -40,6 +45,9 @@ class Teleop
 		if (rightStick != null) rightStick.dispose();
 		if (utilityStick != null) utilityStick.dispose();
 		if (launchPad != null) launchPad.dispose();
+		if (shifterValve != null) shifterValve.dispose();
+		if (revBoard != null) revBoard.dispose();
+		//if (hallEffectSensor != null) hallEffectSensor.free();
 	}
 
 	void OperatorControl()
@@ -66,6 +74,7 @@ class Teleop
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ELEVEN);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_FIVE);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_BLUE);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_YELLOW);
         launchPad.addLaunchPadEventListener(new LaunchPadListener());
         launchPad.Start();
 
@@ -111,6 +120,9 @@ class Teleop
 
 			robot.robotDrive.tankDrive(leftY * powerFactor, rightY * powerFactor);
 
+			//LCD.printLine(10, "buttonA=%b  buttonA=%b  pot=%d  hes=%b", revBoard.getButtonA(), revBoard.getButtonB(), 
+			//		revBoard.getPotValue(), !hallEffectSensor.get());
+			
 			// End of driving loop.
 			
 			Timer.delay(.020);	// wait 20ms for update from driver station.
@@ -119,6 +131,20 @@ class Teleop
 		// End of teleop mode.
 		
 		Util.consoleLog("end");
+	}
+
+	void shifterClose()
+	{
+		Util.consoleLog();
+		
+		shifterValve.Close();
+	}
+
+	void shifterOpen()
+	{
+		Util.consoleLog();
+		
+		shifterValve.Open();
 	}
 
 	// Handle LaunchPad control events.
@@ -148,14 +174,28 @@ class Teleop
 				((Teleop) launchPadEvent.getSource()).powerFactor = 0.5;
 				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
 			}
-			
+
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_YELLOW)
+			{
+				//revBoard.display("");
+				
+				if (launchPadEvent.control.latchedState)
+    				shifterOpen();
+    			else
+    				shifterClose();
+			}
+
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE)
+			{
+				//revBoard.blink(true);
+				//revBoard.displayTestPattern();
+				//revBoard.display("ZX 9");
+			}
 			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				/* Get published values from GRIP using NetworkTables */
 		        for (double centerX : grip.getNumberArray("myContoursReport/centerX", new double[0])) {
 		            System.out.println("Got contour with x=" + centerX);
 		        }
-
-			}
 	    }
 	    
 	    public void ButtonUp(LaunchPadEvent launchPadEvent) 
