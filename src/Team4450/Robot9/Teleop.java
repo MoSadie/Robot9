@@ -18,7 +18,9 @@ class Teleop
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
 	private final FestoDA		shifterValve;
+	private airTesting airTest;
 	private final RevDigitBoard	revBoard = new RevDigitBoard();
+	private NetworkTable grip;
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
 	
 	// Constructor.
@@ -29,8 +31,7 @@ class Teleop
 
 		this.robot = robot;
 		grip = robot.grip;
-		
-		shifterValve = new FestoDA(1);
+ 		shifterValve = new FestoDA(1);
 		
 		shifterClose();
 	}
@@ -196,6 +197,7 @@ class Teleop
 		        for (double centerX : grip.getNumberArray("myContoursReport/centerX", new double[0])) {
 		            System.out.println("Got contour with x=" + centerX);
 		        }
+			}
 	    }
 	    
 	    public void ButtonUp(LaunchPadEvent launchPadEvent) 

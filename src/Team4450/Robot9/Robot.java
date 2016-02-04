@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.CANTalon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-1.25.16-01N";
+  static final String  	PROGRAM_NAME = "SWF9-1.28.01-01N";
   
   //Create CANTalon s for each motor controller
   final CANTalon left_front = new CANTalon(1);
@@ -95,10 +95,10 @@ public class Robot extends SampleRobot
         
         // Initialize CAN Talons and write status to log so we can verify
         // all the talons are connected.
-        initializeCANTalon(LFTalon);
-        initializeCANTalon(LRTalon);
-        initializeCANTalon(RFTalon);
-        initializeCANTalon(RRTalon);
+        initializeCANTalon(left_front);
+        initializeCANTalon(left_rear);
+        initializeCANTalon(right_front);
+        initializeCANTalon(right_rear);
         
         robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
         robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
