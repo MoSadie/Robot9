@@ -89,10 +89,10 @@ public class Robot extends SampleRobot
         robotDrive.setExpiration(0.1);
     
         ds = DriverStation.getInstance();
-    		
+
         // IP Camera object used for vision processing.
         //camera = AxisCamera.getInstance(CAMERA_IP);
-        
+
         // Initialize CAN Talons and write status to log so we can verify
         // all the talons are connected.
         initializeCANTalon(left_front);
@@ -100,11 +100,13 @@ public class Robot extends SampleRobot
         initializeCANTalon(right_front);
         initializeCANTalon(right_rear);
         
-        robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-        robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        left_front.setInverted(true);
+        right_front.setInverted(true);
+        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
     
-        robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-        robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
       	
         Util.consoleLog("%s %s", PROGRAM_NAME, "end");
     }
