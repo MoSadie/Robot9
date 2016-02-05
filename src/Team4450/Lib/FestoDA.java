@@ -34,6 +34,17 @@ public class FestoDA
     
 		//Close();
 	}
+	
+	public FestoDA(int port1, int port2) {
+		Util.consoleLog("Port1=%d Port2=%d", port1, port2);
+		
+		valveOpenSide = new Solenoid(port1);
+		valveCloseSide = new Solenoid(port2);
+		
+		solenoidSlideTime = .05;
+		
+		//Clode();
+	}
 
 	public void dispose()
 	{
