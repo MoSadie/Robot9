@@ -11,6 +11,7 @@ public class Autonomous
 {
 	private final Robot	robot;
 	private final int	program = (int) SmartDashboard.getNumber("AutoProgramSelect");
+	private final FestoDA gearboxShift, powerTakeoff;
 	
 	// encoder is plugged into dio port 2 - orange=+5v blue=signal, dio port 3 black=gnd yellow=signal. 
 	private Encoder		encoder = new Encoder(2, 3, true, EncodingType.k4X);
@@ -20,6 +21,8 @@ public class Autonomous
 		Util.consoleLog();
 		
 		this.robot = robot;
+		gearboxShift = new FestoDA(0);
+		powerTakeoff = new FestoDA(2);
 	}
 
 	public void dispose()
@@ -27,6 +30,8 @@ public class Autonomous
 		Util.consoleLog();
 		
 		encoder.free();
+		gearboxShift.dispose();
+		powerTakeoff.dispose();
 	}
 
 	public void execute()

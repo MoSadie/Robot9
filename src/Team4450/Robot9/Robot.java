@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-1.28.01-01N";
+  static final String  	PROGRAM_NAME = "SWF9-2.05.16-01N";
   
   //Create CANTalon s for each motor controller
   final CANTalon left_front = new CANTalon(1);
@@ -68,7 +68,9 @@ public class Robot extends SampleRobot
 	        "/home/lvuser/grip.jar", "/home/lvuser/project.grip" };
 
   public final NetworkTable grip = NetworkTable.getTable("GRIP");
-
+  
+  //Create FestoDA System
+  public FestoDA		gearboxShift, powerTakeoff;
  
   public Robot() throws IOException
   {	
@@ -107,7 +109,7 @@ public class Robot extends SampleRobot
     
         //robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
         //robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-      	
+        
         Util.consoleLog("%s %s", PROGRAM_NAME, "end");
     }
     catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}

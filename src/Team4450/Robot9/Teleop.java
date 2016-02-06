@@ -17,8 +17,8 @@ class Teleop
 	private double				powerFactor = 1.0;
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
-	private final FestoDA		shifterValve;
-	private airTesting airTest;
+	private final FestoDA		gearboxShift, powerTakeoff;
+	//private airTesting airTest;
 	private final RevDigitBoard	revBoard = new RevDigitBoard();
 	private NetworkTable grip;
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
@@ -31,7 +31,9 @@ class Teleop
 
 		this.robot = robot;
 		grip = robot.grip;
- 		shifterValve = new FestoDA(1);
+    	//Initialize FestoDA system
+        gearboxShift = new FestoDA(0);
+        powerTakeoff = new FestoDA(2);
 		
 		shifterClose();
 	}
@@ -41,12 +43,13 @@ class Teleop
 	void dispose()
 	{
 		Util.consoleLog();
-		airTest.dispose();
+		//airTest.dispose();
 		if (leftStick != null) leftStick.dispose();
 		if (rightStick != null) rightStick.dispose();
 		if (utilityStick != null) utilityStick.dispose();
 		if (launchPad != null) launchPad.dispose();
-		if (shifterValve != null) shifterValve.dispose();
+		if (gearboxShift != null) gearboxShift.dispose();
+		if (powerTakeoff != null) powerTakeoff.dispose();
 		if (revBoard != null) revBoard.dispose();
 		//if (hallEffectSensor != null) hallEffectSensor.free();
 	}
@@ -96,13 +99,17 @@ class Teleop
         utilityStick.Start();
         
         //Prototyping Cannon Testing Code
-        airTest = new airTesting(this.robot,1,true); //Robot, port, is DA
+        //airTest = new airTesting(this.robot,1,true); //Robot, port, is DA
         
         
         // Motor safety turned on.
         robot.robotDrive.setSafetyEnabled(true);
         
         robot.right_front.setEncPosition(0);
+        
+        // Set Known position
+        shifterOpen();
+        powerTakeoff.Open();
         
 		// Driving loop runs until teleop is over.
 
@@ -144,14 +151,14 @@ class Teleop
 	{
 		Util.consoleLog();
 		
-		shifterValve.Close();
+		gearboxShift.Close();
 	}
 
 	void shifterOpen()
 	{
 		Util.consoleLog();
 		
-		shifterValve.Open();
+		gearboxShift.Open();
 	}
 
 	// Handle LaunchPad control events.
@@ -194,16 +201,21 @@ class Teleop
 
 			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE)
 			{
+				if (launchPadEvent.control.latchedState) {
+					powerTakeoff.Open();
+				} else {
+					powerTakeoff.Close();
+				}
 				//revBoard.blink(true);
 				//revBoard.displayTestPattern();
 				//revBoard.display("ZX 9");
 			}
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
-				/* Get published values from GRIP using NetworkTables */
+			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
+				//Get published values from GRIP using NetworkTables
 		        for (double centerX : grip.getNumberArray("myContoursReport/centerX", new double[0])) {
 		            System.out.println("Got contour with x=" + centerX);
 		        }
-			}
+			} */
 	    }
 	    
 	    public void ButtonUp(LaunchPadEvent launchPadEvent) 
@@ -301,10 +313,12 @@ class Teleop
 			//Changes State of the piston
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
-				if (joyStickEvent.button.latchedState)
-					airTest.Open();
-				else
-					airTest.Close();
+				if (joyStickEvent.button.latchedState) {
+					//airTest.Open();
+	    		}
+				else {
+					//airTest.Close();
+				}
 			
 			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
 			
