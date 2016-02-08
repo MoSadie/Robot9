@@ -30,15 +30,15 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 public class Robot extends SampleRobot 
 {
   static final String  	PROGRAM_NAME = "SWF9-2.05.16-01N";
-  
-  //Create CANTalon s for each motor controller
-  final CANTalon left_front = new CANTalon(1);
-  final CANTalon left_rear = new CANTalon(2);
-  final CANTalon right_front = new CANTalon(3);
-  final CANTalon right_rear = new CANTalon(4);
-  
-  // Motor CAN port assignments (1=front-left, 2=rear-left, 3=front-right, 4=rear-right)
-  final RobotDrive      robotDrive = new RobotDrive(left_front,left_rear,right_front,right_rear);
+
+  // Motor CAN ID assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
+  final CANTalon		LFTalon = new CANTalon(1);
+  final CANTalon		LRTalon = new CANTalon(2);
+  final CANTalon		RFTalon = new CANTalon(3);
+  final CANTalon		RRTalon = new CANTalon(4);
+  final CANTalon		LSlaveTalon = new CANTalon(5);
+  final CANTalon		RSlaveTalon = new CANTalon(6);
+  final RobotDrive      robotDrive = new RobotDrive(LFTalon, LRTalon, RFTalon, RRTalon);
   final Joystick        utilityStick = new Joystick(2);	// 0 old ds configuration
   final Joystick        leftStick = new Joystick(0);	// 1
   final Joystick        rightStick = new Joystick(1);	// 2
@@ -97,18 +97,26 @@ public class Robot extends SampleRobot
 
         // Initialize CAN Talons and write status to log so we can verify
         // all the talons are connected.
-        initializeCANTalon(left_front);
-        initializeCANTalon(left_rear);
-        initializeCANTalon(right_front);
-        initializeCANTalon(right_rear);
+        initializeCANTalon(LFTalon);
+        initializeCANTalon(LRTalon);
+        initializeCANTalon(RFTalon);
+        initializeCANTalon(RRTalon);
+        initializeCANTalon(LSlaveTalon);
+        initializeCANTalon(RSlaveTalon);
         
-        left_front.setInverted(true);
-        right_front.setInverted(true);
-        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        // Configure slave CAN Talons to follow the front L & R Talons.
+        LSlaveTalon.changeControlMode(TalonControlMode.Follower);
+        LFTalon.setInverted(true);
+
+        RSlaveTalon.changeControlMode(TalonControlMode.Follower);
+        RFTalon.setInverted(true);
+        // Reverse motors to they all turn on the right direction to match "forward"
+        // as we define it for the robot.
+        robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
     
-        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-        //robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+        robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+        robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
         
         Util.consoleLog("%s %s", PROGRAM_NAME, "end");
     }

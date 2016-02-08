@@ -105,8 +105,7 @@ class Teleop
         // Motor safety turned on.
         robot.robotDrive.setSafetyEnabled(true);
         
-        robot.right_front.setEncPosition(0);
-        
+        robot.RFTalon.setEncPosition(0);
         // Set Known position
         shifterOpen();
         powerTakeoff.Open();
@@ -132,7 +131,7 @@ class Teleop
 
 			//LCD.printLine(7, "penc=%d  pv=%d", robot.RFTalon.getPulseWidthPosition(), robot.RFTalon.getPulseWidthVelocity());
 			//LCD.printLine(8, "aenc=%d  av=%d", robot.RFTalon.getAnalogInPosition(), robot.RFTalon.getAnalogInVelocity());
-			LCD.printLine(9, "qenc=%d  qv=%d", robot.right_front.getEncPosition(), robot.right_front.getEncVelocity());
+			LCD.printLine(9, "qenc=%d  qv=%d", robot.RFTalon.getEncPosition(), robot.RFTalon.getEncVelocity());
 			
 			LCD.printLine(10, "A=%b  B=%b  pot=%d  potv=%f  hes=%b", revBoard.getButtonA(), revBoard.getButtonB(), 
 					revBoard.getPotValue(), revBoard.getPot().getVoltage(), false); //, !hallEffectSensor.get());
