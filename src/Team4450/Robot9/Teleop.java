@@ -9,7 +9,7 @@ import Team4450.Lib.LaunchPad.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.networktables.*;
+//import edu.wpi.first.wpilibj.networktables.*;
 
 class Teleop
 {
