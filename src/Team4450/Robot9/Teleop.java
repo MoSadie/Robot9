@@ -14,13 +14,11 @@ import edu.wpi.first.wpilibj.networktables.*;
 class Teleop
 {
 	private final Robot 		robot;
-	private double				powerFactor = 1.0;
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
-	private final FestoDA		gearboxShift, powerTakeoff;
-	//private airTesting airTest;
-	private final RevDigitBoard	revBoard = new RevDigitBoard();
-	private NetworkTable grip;
+	private final FestoDA		shifterValve, ptoValve, valve3, valve4;
+	private boolean				ptoMode = false;
+	//private final RevDigitBoard	revBoard = new RevDigitBoard();
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
 	
 	// Constructor.
@@ -30,12 +28,12 @@ class Teleop
 		Util.consoleLog();
 
 		this.robot = robot;
-		grip = robot.grip;
-    	//Initialize FestoDA system
-        gearboxShift = new FestoDA(0);
-        powerTakeoff = new FestoDA(2);
 		
-		shifterClose();
+		shifterValve = new FestoDA(2);
+		ptoValve = new FestoDA(0);
+
+		valve3 = new FestoDA(4);
+		valve4 = new FestoDA(6);
 	}
 
 	// Free all objects that need it.
@@ -48,9 +46,11 @@ class Teleop
 		if (rightStick != null) rightStick.dispose();
 		if (utilityStick != null) utilityStick.dispose();
 		if (launchPad != null) launchPad.dispose();
-		if (gearboxShift != null) gearboxShift.dispose();
-		if (powerTakeoff != null) powerTakeoff.dispose();
-		if (revBoard != null) revBoard.dispose();
+		if (shifterValve != null) shifterValve.dispose();
+		if (ptoValve != null) ptoValve.dispose();
+		if (valve3 != null) valve3.dispose();
+		if (valve4 != null) valve4.dispose();
+		//if (revBoard != null) revBoard.dispose();
 		//if (hallEffectSensor != null) hallEffectSensor.free();
 	}
 
@@ -65,29 +65,28 @@ class Teleop
 		
 		LCD.printLine(1, "Mode: OperatorControl");
 		LCD.printLine(2, "All=%s, Start=%d, FMS=%b", robot.alliance.name(), robot.location, robot.ds.isFMSAttached());
+		
+		// Initial setting of air valves.
 
-		SmartDashboard.putNumber("Power Factor", powerFactor * 100);
+		shifterLow();
+		ptoDisable();
+		
+		valve3.SetA();
+		valve4.SetA();
 		
 		// Configure LaunchPad and Joystick event handlers.
 		
-		launchPad = new LaunchPad(robot.launchPad, LaunchPadControlIDs.BUTTON_SIX, this);
-		LaunchPadControl lpControl = launchPad.AddControl(LaunchPadControlIDs.BUTTON_FOUR);
+		launchPad = new LaunchPad(robot.launchPad, LaunchPadControlIDs.BUTTON_BLACK, this);
+		LaunchPadControl lpControl = launchPad.AddControl(LaunchPadControlIDs.ROCKER_LEFT_FRONT);
 		lpControl.controlType = LaunchPadControlTypes.SWITCH;
-		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ONE);
-		launchPad.AddControl(LaunchPadControlIDs.BUTTON_EIGHT);
-		launchPad.AddControl(LaunchPadControlIDs.BUTTON_ELEVEN);
-		launchPad.AddControl(LaunchPadControlIDs.BUTTON_FIVE);
-		launchPad.AddControl(LaunchPadControlIDs.BUTTON_BLUE);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_YELLOW);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_BLUE);
         launchPad.addLaunchPadEventListener(new LaunchPadListener());
         launchPad.Start();
 
-		leftStick = new JoyStick(robot.leftStick, "LeftStick", JoyStickButtonIDs.TOP_LEFT, this);
-		leftStick.AddButton(JoyStickButtonIDs.TOP_RIGHT);
-		leftStick.AddButton(JoyStickButtonIDs.TOP_MIDDLE);
-		leftStick.AddButton(JoyStickButtonIDs.TOP_BACK);
-        leftStick.addJoyStickEventListener(new LeftStickListener());
-        leftStick.Start();
+		//leftStick = new JoyStick(robot.leftStick, "LeftStick", JoyStickButtonIDs.TOP_LEFT, this);
+        //leftStick.addJoyStickEventListener(new LeftStickListener());
+        //leftStick.Start();
         
 		rightStick = new JoyStick(robot.rightStick, "RightStick", JoyStickButtonIDs.TOP_LEFT, this);
         rightStick.addJoyStickEventListener(new RightStickListener());
@@ -105,11 +104,6 @@ class Teleop
         // Motor safety turned on.
         robot.robotDrive.setSafetyEnabled(true);
         
-        robot.RFTalon.setEncPosition(0);
-        // Set Known position
-        shifterOpen();
-        powerTakeoff.Open();
-        
 		// Driving loop runs until teleop is over.
 
 		while (robot.isEnabled() && robot.isOperatorControl())
@@ -117,25 +111,26 @@ class Teleop
 			// Get joystick deflection and feed to robot drive object.
 			// using calls to our JoyStick class.
 
-			rightY = rightStick.GetY();		// fwd/back right
-			leftY = leftStick.GetY();		// fwd/back left
+			if (ptoMode)
+			{
+				rightY = utilityStick.GetY();
+				leftY = rightY;
+			} 
+			else
+			{
+    			rightY = rightStick.GetY();		// fwd/back right
+    			leftY = leftStick.GetY();		// fwd/back left
+			}
 
-			LCD.printLine(4, "leftY=%.4f  rightY=%.4f, power=%f", leftY, rightY, powerFactor);
+			LCD.printLine(4, "leftY=%.4f  rightY=%.4f", leftY, rightY);
 
 			// This corrects stick alignment error when trying to drive straight. 
 			if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
 			
 			// Set motors.
 
-			robot.robotDrive.tankDrive(leftY * powerFactor, rightY * powerFactor);
+			robot.robotDrive.tankDrive(leftY, rightY);
 
-			//LCD.printLine(7, "penc=%d  pv=%d", robot.RFTalon.getPulseWidthPosition(), robot.RFTalon.getPulseWidthVelocity());
-			//LCD.printLine(8, "aenc=%d  av=%d", robot.RFTalon.getAnalogInPosition(), robot.RFTalon.getAnalogInVelocity());
-			LCD.printLine(9, "qenc=%d  qv=%d", robot.RFTalon.getEncPosition(), robot.RFTalon.getEncVelocity());
-			
-			LCD.printLine(10, "A=%b  B=%b  pot=%d  potv=%f  hes=%b", revBoard.getButtonA(), revBoard.getButtonB(), 
-					revBoard.getPotValue(), revBoard.getPot().getVoltage(), false); //, !hallEffectSensor.get());
-			
 			// End of driving loop.
 			
 			Timer.delay(.020);	// wait 20ms for update from driver station.
@@ -146,18 +141,48 @@ class Teleop
 		Util.consoleLog("end");
 	}
 
-	void shifterClose()
+	// Transmission control functions.
+	
+	void shifterLow()
 	{
 		Util.consoleLog();
 		
-		gearboxShift.Close();
+		shifterValve.SetA();
+
+		SmartDashboard.putBoolean("Low", true);
+		SmartDashboard.putBoolean("High", false);
 	}
 
-	void shifterOpen()
+	void shifterHigh()
 	{
 		Util.consoleLog();
 		
-		gearboxShift.Open();
+		shifterValve.SetB();
+
+		SmartDashboard.putBoolean("Low", false);
+		SmartDashboard.putBoolean("High", true);
+	}
+
+	void ptoDisable()
+	{
+		Util.consoleLog();
+		
+		ptoMode = false;
+		
+		ptoValve.SetA();
+
+		SmartDashboard.putBoolean("PTO", false);
+	}
+
+	void ptoEnable()
+	{
+		Util.consoleLog();
+		
+		ptoValve.SetB();
+
+		ptoMode = true;
+		
+		SmartDashboard.putBoolean("PTO", true);
 	}
 
 	// Handle LaunchPad control events.
@@ -170,44 +195,29 @@ class Teleop
 			
 			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
 			
-			if (launchPadEvent.control.id.equals(LaunchPad.LaunchPadControlIDs.BUTTON_SIX))
+			if (launchPadEvent.control.id.equals(LaunchPad.LaunchPadControlIDs.BUTTON_BLACK))
 				if (launchPadEvent.control.latchedState)
 					robot.cameraThread.ChangeCamera(robot.cameraThread.cam2);
 				else
 					robot.cameraThread.ChangeCamera(robot.cameraThread.cam1);
-			
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_ONE)
+	
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE)
 			{
-				((Teleop) launchPadEvent.getSource()).powerFactor = 1.0;
-				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
-			}
-			
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_EIGHT)
-			{
-				((Teleop) launchPadEvent.getSource()).powerFactor = 0.5;
-				SmartDashboard.putNumber("Power Factor", ((Teleop) launchPadEvent.getSource()).powerFactor * 100);
+				if (launchPadEvent.control.latchedState)
+    				shifterHigh();
+    			else
+    				shifterLow();
 			}
 
 			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_YELLOW)
 			{
-				//revBoard.display("");
-				
 				if (launchPadEvent.control.latchedState)
-    				shifterOpen();
-    			else
-    				shifterClose();
-			}
-
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE)
-			{
-				if (launchPadEvent.control.latchedState) {
-					powerTakeoff.Open();
-				} else {
-					powerTakeoff.Close();
+				{
+					shifterLow();
+					ptoEnable();
 				}
-				//revBoard.blink(true);
-				//revBoard.displayTestPattern();
-				//revBoard.display("ZX 9");
+    			else
+    				ptoDisable();
 			}
 			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				//Get published values from GRIP using NetworkTables
@@ -261,38 +271,13 @@ class Teleop
 
 	// Handle Left JoyStick Button events.
 	
+	@SuppressWarnings("unused")
 	private class LeftStickListener implements JoyStickEventListener 
 	{
 	    public void ButtonDown(JoyStickEvent joyStickEvent) 
 	    {
 			Util.consoleLog("%s, latchedState=%b", joyStickEvent.button.id.name(),  joyStickEvent.button.latchedState);
 			
-			// Change the power factor setting.
-
-			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_LEFT)) ((Teleop) joyStickEvent.getSource()).powerFactor = 1.0;
-			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_RIGHT)) ((Teleop) joyStickEvent.getSource()).powerFactor = 0.5;
-			
-			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_MIDDLE))
-			{
-				if (((Teleop) joyStickEvent.getSource()).powerFactor == 1.0)
-					((Teleop) joyStickEvent.getSource()).powerFactor = .75;
-				else if (((Teleop) joyStickEvent.getSource()).powerFactor == .75)
-					((Teleop) joyStickEvent.getSource()).powerFactor = .50;
-				else if (((Teleop) joyStickEvent.getSource()).powerFactor == .50)
-					((Teleop) joyStickEvent.getSource()).powerFactor = .25;
-			}
-			
-			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_BACK))
-			{
-				if (((Teleop) joyStickEvent.getSource()).powerFactor == .25)
-					((Teleop) joyStickEvent.getSource()).powerFactor = .50;
-				else if (((Teleop) joyStickEvent.getSource()).powerFactor == .50)
-					((Teleop) joyStickEvent.getSource()).powerFactor = .75;
-				else if (((Teleop) joyStickEvent.getSource()).powerFactor == .75)
-					((Teleop) joyStickEvent.getSource()).powerFactor = 1.0;
-			}
-
-			SmartDashboard.putNumber("Power Factor", ((Teleop) joyStickEvent.getSource()).powerFactor * 100);
 	    }
 
 	    public void ButtonUp(JoyStickEvent joyStickEvent) 
