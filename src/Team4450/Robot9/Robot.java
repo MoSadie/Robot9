@@ -6,7 +6,7 @@ package Team4450.Robot9;
 
 import java.io.IOException;
 import java.util.Properties;
-
+import Team4450.Robot9.Tower.*;
 import Team4450.Lib.*;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -61,6 +61,7 @@ public class Robot extends SampleRobot
   static final int	   	USB_CAMERA = 2;
   static final int     	IP_CAMERA = 3;
   
+  public TowerControl towerControl = new TowerControl(this);
   //Test GRIP Code
   //private final static String[] GRIP_ARGS = new String[] {
   //        "/usr/local/frc/JRE/bin/java", "-jar",
