@@ -13,7 +13,7 @@ import com.ni.vision.NIVision.ImageType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Example of finding target wiht green light shined on retroreflective tape.
+ * Example of finding target with green light shined on retroreflective tape.
  * This example utilizes an image file, which you need to copy to the roboRIO
  * To use a camera you will have to integrate the appropriate camera details with this example.
  * To use a USB camera instead, see the SimpelVision and AdvancedVision examples for details

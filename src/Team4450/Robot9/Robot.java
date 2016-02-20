@@ -213,7 +213,9 @@ public class Robot extends SampleRobot
             
     	  SmartDashboard.putBoolean("Disabled", false);
     	  SmartDashboard.putBoolean("Auto Mode", true);
-        
+    	  if (towerControl.initDone == false) {
+    		  towerControl.start();
+    	  }
     	  // Make available the alliance (red/blue) and staring position as
     	  // set on the driver station or FMS.
         
@@ -263,7 +265,10 @@ public class Robot extends SampleRobot
      		Util.consoleLog("Joystick 2: " + utilityStick.getName());
      		Util.consoleLog("Joystick 3: " + launchPad.getName());
      		
-     		
+     	  if (towerControl.initDone == false) {
+     		  towerControl.start();
+     	  }
+     	  
           // Start operator control process contained in the MyTeleop class.
         
           Teleop teleOp = new Teleop(this);
@@ -322,7 +327,7 @@ public class Robot extends SampleRobot
       RSlaveCanTalon.set(RFCanTalon.getDeviceID());
 }
 
-  private void InitializePWMTalonDrive()
+  public void InitializePWMTalonDrive()
   {
 	  Util.consoleLog();
 
@@ -338,12 +343,18 @@ public class Robot extends SampleRobot
 * or a talon has low voltage value, it did not get recognized by the RR on start up.
 * @param talon A CANTalon object to initialize
 **/
-  private void InitializeCANTalon(CANTalon talon)
+  public void InitializeCANTalon(CANTalon talon)
   {
 	  Util.consoleLog("talon init: %s   voltage=%.1f", talon.getDescription(), talon.getBusVoltage());
 
 	  talon.clearStickyFaults();
 	  talon.enableControl();
 	  talon.changeControlMode(TalonControlMode.PercentVbus);
+  }
+  public boolean isComp(){
+	  return robotProperties.getProperty("RobotID").equals("comp");
+  }
+  public boolean isClone(){
+	  return robotProperties.getProperty("RobotID").equals("clone");
   }
 }

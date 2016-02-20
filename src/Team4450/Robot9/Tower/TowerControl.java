@@ -4,23 +4,56 @@ import Team4450.Lib.*;
 import Team4450.Robot9.*;
 import edu.wpi.first.wpilibj.*;
 
-public class TowerControl {
+/**
+ * This controls the 'tower' on the 2016 robot. This controls firing and picking up boulders.
+ * @author Sean Flo
+ *
+ */
+public class TowerControl extends Thread {
 	public Shooter shoot;
 	public Pickup pickup;
-	FestoDA pickupPiston;
-	CANTalon belt;
-	Talon[] launchMotors;
+	public FestoDA pickupPiston;
+	public CANTalon belt;
+	public Talon[] launchMotors;
+	public FestoDA shootPiston;
+	public DigitalInput ballCheck;
+	public boolean initDone;
 	public TowerControl(Robot robot){
 		pickupPiston = new FestoDA(6);
 		belt = new CANTalon(7);
-		if (robot.robotProperties.getProperty("RobotID").equals("comp")) {
+		robot.InitializeCANTalon(belt);
+		shootPiston = new FestoDA(4);
+		
+		if (robot.isComp()) {
 			launchMotors[0] = new Talon(0);
 			launchMotors[1] = new Talon(1);
-		} else if (robot.robotProperties.getProperty("RobotID").equals("clone")) {
+		} else if (robot.isClone()) {
 			launchMotors[0] = new Talon(7);
 			launchMotors[1]= new Talon(8);
 		}
+		ballCheck = new DigitalInput(0);
 		shoot = new Shooter(robot);
 		pickup = new Pickup(robot);
+		
+	}
+	
+	/**
+	 * Initializes the TowerControl class, setting the belt and hood position to known states.
+	 */
+	public void run() {
+		if (initDone==false) {
+			initDone = true;
+			pickupPiston.SetB();
+			shootPiston.SetA();
+		}
+	}
+	
+	void setBelt(String position) {
+		if (position.toLowerCase() == "down") {
+			pickupPiston.SetB();
+		}
+		if (position.toLowerCase() == "up") {
+			pickupPiston.SetA();
+		}
 	}
 }

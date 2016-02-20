@@ -5,16 +5,24 @@ import Team4450.Robot9.*;
 import edu.wpi.first.wpilibj.*;
 
 public class Pickup {
+	private Robot robot;
 	private FestoDA pickupPiston;
 	private CANTalon belt;
+	private TowerControl towerControl;
 	Pickup(Robot robot){
-		pickupPiston = robot.towerControl.pickupPiston;
-		belt = robot.towerControl.belt;
+		this.robot = robot;
+		towerControl = robot.towerControl;
+		pickupPiston = towerControl.pickupPiston;
+		belt = towerControl.belt;
 	}
 	void PickupBall() {
-		belt.set(-0.5);
-		Timer.delay(0.5);
-		pickupPiston.SetB(); //TODO Check This!!!
+		Util.consoleLog();
+		towerControl.setBelt("down");
+		belt.set(-0.75);
+		while (robot.towerControl.ballCheck.get() == false) {
+			Timer.delay(0.0050);
+		}
 		belt.set(0);
 	}
+	
 }
