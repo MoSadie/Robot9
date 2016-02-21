@@ -94,6 +94,7 @@ class Teleop
         
 		utilityStick = new JoyStick(robot.utilityStick, "UtilityStick", JoyStickButtonIDs.TOP_LEFT, this);
 		utilityStick.AddButton(JoyStickButtonIDs.TRIGGER);
+		utilityStick.AddButton(JoyStickButtonIDs.TOP_RIGHT);
         utilityStick.addJoyStickEventListener(new UtilityStickListener());
         utilityStick.Start();
         
@@ -297,12 +298,13 @@ class Teleop
 			//Changes State of the piston
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
-				if (joyStickEvent.button.latchedState) {
-					//airTest.Open();
-	    		}
-				else {
-					//airTest.Close();
-				}
+				robot.towerControl.shoot.fire(1);
+			
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_RIGHT))
+				if (joyStickEvent.button.latchedState)
+					robot.towerControl.pickup.pickupBall();
+				else
+					robot.towerControl.belt.set(0);
 			
 			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
 			

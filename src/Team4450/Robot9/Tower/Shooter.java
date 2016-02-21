@@ -36,14 +36,14 @@ public class Shooter {
 	}
 	/**
 	 * This adjusts the angle of the shooter tube. Accepts the strings 'retract' or 'extend'
-	 * @param Side The side of the piston to pressurize. Accepts 'retract' or 'extend'
+	 * @param Position The position to put the shooter hood in. Accepts 'retract' or 'extend'
 	 */
-	public void adjustAngle(String Side) {
-		if (Side == "retract") {
+	public void adjustAngle(String Position) {
+		if (Position == "retract") {
 			shootPiston.SetA();
 			return;
 		}
-		if (Side == "extend") {
+		if (Position == "extend") {
 			shootPiston.SetB();
 			return;
 		}

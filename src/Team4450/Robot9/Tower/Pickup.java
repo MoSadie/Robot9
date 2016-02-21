@@ -15,7 +15,7 @@ public class Pickup {
 		pickupPiston = towerControl.pickupPiston;
 		belt = towerControl.belt;
 	}
-	void PickupBall() {
+	public void pickupBall() {
 		Util.consoleLog();
 		towerControl.setBelt("down");
 		belt.set(-0.75);
