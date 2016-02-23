@@ -4,6 +4,7 @@ package Team4450.Robot9;
 import java.lang.Math;
 
 import Team4450.Lib.*;
+import Team4450.Lib.FestoDA.PCMids;
 import Team4450.Lib.JoyStick.*;
 import Team4450.Lib.LaunchPad.*;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,7 +17,7 @@ class Teleop
 	private final Robot 		robot;
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
-	private final FestoDA		shifterValve, ptoValve, valve3, valve4;
+	private final FestoDA		shifterValve, ptoValve, valve3, valve4, rampValve;
 	private boolean				ptoMode = false;
 	//private final RevDigitBoard	revBoard = new RevDigitBoard();
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
@@ -34,6 +35,8 @@ class Teleop
 
 		valve3 = new FestoDA(4);
 		valve4 = new FestoDA(6);
+		
+		rampValve = new FestoDA(PCMids.PCM_ONE, 0);
 	}
 
 	// Free all objects that need it.
@@ -50,6 +53,7 @@ class Teleop
 		if (ptoValve != null) ptoValve.dispose();
 		if (valve3 != null) valve3.dispose();
 		if (valve4 != null) valve4.dispose();
+		if (rampValve != null) rampValve.dispose();
 		//if (revBoard != null) revBoard.dispose();
 		//if (hallEffectSensor != null) hallEffectSensor.free();
 	}
@@ -74,6 +78,8 @@ class Teleop
 		valve3.SetA();
 		valve4.SetA();
 		
+		rampValve.SetA(); //TODO Check A/B Setting
+		
 		// Configure LaunchPad and Joystick event handlers.
 		
 		launchPad = new LaunchPad(robot.launchPad, LaunchPadControlIDs.BUTTON_BLACK, this);
@@ -81,6 +87,7 @@ class Teleop
 		lpControl.controlType = LaunchPadControlTypes.SWITCH;
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_YELLOW);
 		launchPad.AddControl(LaunchPadControlIDs.BUTTON_BLUE);
+		launchPad.AddControl(LaunchPadControlIDs.BUTTON_GREEN);
         launchPad.addLaunchPadEventListener(new LaunchPadListener());
         launchPad.Start();
 
@@ -219,6 +226,13 @@ class Teleop
 				}
     			else
     				ptoDisable();
+			}
+			
+			if (launchPadEvent.control.id.equals(LaunchPadControlIDs.BUTTON_GREEN)) {
+				if (launchPadEvent.control.latchedState) 
+					rampValve.SetA(); //TODO Confirm A/B Setting
+				else
+					rampValve.SetB();
 			}
 			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				//Get published values from GRIP using NetworkTables

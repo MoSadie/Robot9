@@ -15,13 +15,23 @@ public class FestoSA
 	private final Solenoid valveOpenSide;
 
 	/**
-	 * @param port DIO port wired to valve.
+	 * @param port The port on the PCM the solenoid is wired to.
 	 */
 	public FestoSA(int port)
 	{
 	  	Util.consoleLog("port=%d", port); 
 
 		valveOpenSide = new Solenoid(port);
+	}
+	
+	/**
+	 * @param port The port on the PCM the solenoid is wired to.
+	 */
+	public FestoSA(int port, PCMids moduleNumber)
+	{
+	  	Util.consoleLog("port=%d ModuleNumber=%d", port, moduleNumber.value); 
+
+		valveOpenSide = new Solenoid(moduleNumber.value, port);
 	}
 
 	public void dispose()
@@ -51,5 +61,17 @@ public class FestoSA
 		Util.consoleLog();
     
 		valveOpenSide.set(false);
+	}
+	
+	public enum PCMids {
+		PCM_ZERO (0),
+		PCM_ONE (1);
+
+		public int value;
+		
+		private PCMids (int value) {
+			this.value = value;
+		}
+		
 	}
 }

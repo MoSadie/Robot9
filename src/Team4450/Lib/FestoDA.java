@@ -42,6 +42,10 @@ public class FestoDA
 		//Close();
 	}
 	
+	/**
+	 * @param port1 PCM port wired to open/A side of valve.
+	 * @param port2 Close/B side is wired to PCM, usually the next port.
+	 */
 	public FestoDA(int port1, int port2) {
 		Util.consoleLog("Port1=%d Port2=%d", port1, port2);
 		
@@ -50,9 +54,40 @@ public class FestoDA
 		
 		solenoidSlideTime = .05;
 		
-		//Clode();
+		//Close();
 	}
-
+	
+	/**
+	 * @param port PCM port wired to open/A side of valve.
+	 * @param moduleNumber The CAN Device ID that the PCM is on.
+	 */
+	public FestoDA(PCMids moduleNumber, int port) {
+		Util.consoleLog("Port=%d ModuleNumber=%d", port, moduleNumber);
+		
+		valveOpenSide = new Solenoid(moduleNumber.value, port);
+		valveCloseSide = new Solenoid(moduleNumber.value, port+1);
+		
+		solenoidSlideTime = .05;
+		
+		//Close();
+	}
+	
+	/**
+	 * @param port1 PCM port wired to open/A side of valve.
+	 * @param port2 Close/B side is wired to PCM, usually the next port.
+	 * @param moduleNumber The CAN Device ID that the PCM is on.
+	 */
+	public FestoDA(PCMids moduleNumber,int port1, int port2) {
+		Util.consoleLog("Port1=%d Port2=%d", port1, port2);
+		
+		valveOpenSide = new Solenoid(moduleNumber.value, port1);
+		valveCloseSide = new Solenoid(moduleNumber.value, port2);
+		
+		solenoidSlideTime = .05;
+		
+		//Close();
+	}
+	
 	public void dispose()
 	{
 		Util.consoleLog();
@@ -107,5 +142,17 @@ public class FestoDA
 		Util.consoleLog();
 		
 		Close();
+	}
+	
+	public enum PCMids {
+		PCM_ZERO (0),
+		PCM_ONE (1);
+
+		public int value;
+		
+		private PCMids (int value) {
+			this.value = value;
+		}
+		
 	}
 }
