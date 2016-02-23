@@ -5,13 +5,15 @@ import Team4450.Robot9.*;
 import edu.wpi.first.wpilibj.*;
 
 public class Shooter {
-	private Talon[] launchMotors;
+	private Talon launchMotor1;
+	private Talon launchMotor2;
 	private TowerControl towerControl;
 	private FestoDA shootPiston;
 	
 	Shooter(Robot robot) {
 		towerControl = robot.towerControl;
-		launchMotors = towerControl.launchMotors;
+		launchMotor1 = towerControl.launchMotor1;
+		launchMotor2 = towerControl.launchMotor2;
 		shootPiston = towerControl.shootPiston;
 	}
 	
@@ -25,14 +27,14 @@ public class Shooter {
 			return;
 		}
 		towerControl.pickupPiston.SetA();
-		launchMotors[0].set(speed);
-		launchMotors[1].set(speed);
+		launchMotor1.set(speed);
+		launchMotor2.set(speed);
 		Timer.delay(2);
 		towerControl.belt.set(1); //TODO Check this number
 		Timer.delay(1); //TODO Check this number
 		towerControl.belt.set(0);
-		launchMotors[0].set(0);
-		launchMotors[1].set(0);
+		launchMotor1.set(0);
+		launchMotor2.set(0);
 	}
 	/**
 	 * This adjusts the angle of the shooter tube. Accepts the strings 'retract' or 'extend'

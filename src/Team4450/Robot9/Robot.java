@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-2.05.16-01N";
+  static final String  	PROGRAM_NAME = "SWF9-2.05.16-03";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
@@ -352,9 +352,17 @@ public class Robot extends SampleRobot
 	  talon.changeControlMode(TalonControlMode.PercentVbus);
   }
   public boolean isComp(){
+	  try {
 	  return robotProperties.getProperty("RobotID").equals("comp");
+	  }
+	  catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
+	  return false;
   }
   public boolean isClone(){
+	  try {
 	  return robotProperties.getProperty("RobotID").equals("clone");
+	  }
+	  catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
+	  return false;
   }
 }
