@@ -14,8 +14,8 @@ public class TowerControl extends Thread {
 	public Pickup pickup;
 	public FestoDA pickupPiston;
 	public CANTalon belt;
-	public Talon launchMotor1;
-	public Talon launchMotor2;
+	public Talon launchMotor1 = new Talon(0);
+	public Talon launchMotor2 = new Talon(1);
 	public FestoDA shootPiston;
 	public DigitalInput ballCheck;
 	public boolean initDone;
@@ -27,8 +27,8 @@ public class TowerControl extends Thread {
 		shootPiston = new FestoDA(4);
 		Util.consoleLog("Launch Motors init");
 		//if (robot.isComp()) {
-		launchMotor1 = new Talon(0);
-		launchMotor2 = new Talon(1);
+		//launchMotor1 = new Talon(0);
+		//launchMotor2 = new Talon(1);
 		Util.consoleLog("Launch Motors end");
 		//} else if (robot.isClone()) {
 		//	launchMotor1 = new Talon(7);

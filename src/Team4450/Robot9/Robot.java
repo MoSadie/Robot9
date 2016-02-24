@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-2.23.16-01";
+  static final String  	PROGRAM_NAME = "SWF9-2.23.16-02";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
@@ -61,7 +61,7 @@ public class Robot extends SampleRobot
   static final int	   	USB_CAMERA = 2;
   static final int     	IP_CAMERA = 3;
   
-  public TowerControl towerControl = new TowerControl(this);
+  public TowerControl towerControl;
   //Test GRIP Code
   //private final static String[] GRIP_ARGS = new String[] {
   //        "/usr/local/frc/JRE/bin/java", "-jar",
@@ -88,7 +88,7 @@ public class Robot extends SampleRobot
 
         // IP Camera object used for vision processing.
         //camera = AxisCamera.getInstance(CAMERA_IP);
-      	
+        towerControl = new TowerControl(this);
         Util.consoleLog("%s %s", PROGRAM_NAME, "end");
     }
     catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
