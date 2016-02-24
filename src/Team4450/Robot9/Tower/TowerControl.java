@@ -20,22 +20,26 @@ public class TowerControl extends Thread {
 	public DigitalInput ballCheck;
 	public boolean initDone;
 	public TowerControl(Robot robot){
+		try {
 		pickupPiston = new FestoDA(6);
 		belt = new CANTalon(7);
 		robot.InitializeCANTalon(belt);
 		shootPiston = new FestoDA(4);
-		Util.consoleLog("FLARE!!");
+		Util.consoleLog("Launch Motors init");
 		//if (robot.isComp()) {
-			launchMotor1 = new Talon(0);
-			launchMotor2 = new Talon(1);
-		Util.consoleLog("LANDED");
+		launchMotor1 = new Talon(0);
+		launchMotor2 = new Talon(1);
+		Util.consoleLog("Launch Motors end");
 		//} else if (robot.isClone()) {
 		//	launchMotor1 = new Talon(7);
 		//	launchMotor2= new Talon(8);
 		//}
+		Util.consoleLog("DigInput");
 		ballCheck = new DigitalInput(0);
+		Util.consoleLog("DigInput end");
 		shoot = new Shooter(robot);
 		pickup = new Pickup(robot);
+		} catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 		
 	}
 	

@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-2.05.16-03";
+  static final String  	PROGRAM_NAME = "SWF9-2.23.16-01";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;

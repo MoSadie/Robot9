@@ -78,7 +78,7 @@ class Teleop
 		valve3.SetA();
 		valve4.SetA();
 		
-		rampValve.SetA(); //TODO Check A/B Setting
+		rampValve.SetA();
 		
 		// Configure LaunchPad and Joystick event handlers.
 		
@@ -230,9 +230,9 @@ class Teleop
 			
 			if (launchPadEvent.control.id.equals(LaunchPadControlIDs.BUTTON_GREEN)) {
 				if (launchPadEvent.control.latchedState) 
-					rampValve.SetA(); //TODO Confirm A/B Setting
-				else
 					rampValve.SetB();
+				else
+					rampValve.SetA();
 			}
 			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				//Get published values from GRIP using NetworkTables

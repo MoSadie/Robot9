@@ -6,13 +6,11 @@ import edu.wpi.first.wpilibj.*;
 
 public class Pickup {
 	private Robot robot;
-	private FestoDA pickupPiston;
 	private CANTalon belt;
 	private TowerControl towerControl;
 	Pickup(Robot robot){
 		this.robot = robot;
 		towerControl = robot.towerControl;
-		pickupPiston = towerControl.pickupPiston;
 		belt = towerControl.belt;
 	}
 	public void pickupBall() {
