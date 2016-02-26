@@ -1,6 +1,6 @@
 // 2016 competition robot code.
 // Cleaned up and reorganized in preparation for 2016.
-// For Robot "tba" built for FRC game "First Stronghold".
+// For Robot "U.S.S. Kelvin" built for FRC game "First Stronghold".
 
 package Team4450.Robot9;
 
