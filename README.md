@@ -2,7 +2,7 @@
 FRC Team 4450 Robot Control program.
 
 This is the 2016 competition robot control program created by the Olympia Robotics Federation (FRC Team 4450).
-Operates the robot "tba" built for the FRC game "[Stronghold](http://www.firstinspires.org/node/3651)".
+Operates the robot "U.S.S. Kelvin" built for the FRC game "[Stronghold](http://www.firstinspires.org/node/3651)".
 ***************************************************************************************************************
 Version 9.1  
 
