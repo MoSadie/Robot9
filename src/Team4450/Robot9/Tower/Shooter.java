@@ -19,18 +19,19 @@ public class Shooter {
 	
 	/**
 	 * This fires the launcher on the robot.
-	 * @param speed The speed to fire the ball at. (Range: -1 to 1)
+	 * @param launchSpeed The speed to fire the ball at. (Range: -1 to 1)
+	 * @param beltSpeed The speed to move the belt at. (Range: 0 to 1)
 	 */
-	public void fire(double speed) {
-		if (Math.abs(speed) > 1) {
-			Util.consoleLog("Speed not set correctly, expected between -1 and 1, got " + speed);
+	public void fire(double launchSpeed, double beltSpeed) {
+		if (Math.abs(launchSpeed) > 1) {
+			Util.consoleLog("Speed not set correctly, expected between -1 and 1, got " + launchSpeed);
 			return;
 		}
 		towerControl.pickupPiston.SetA();
-		launchMotor1.set(speed);
-		launchMotor2.set(speed);
+		launchMotor1.set(launchSpeed);
+		launchMotor2.set(launchSpeed);
 		Timer.delay(2);
-		towerControl.belt.set(1); //TODO Check this number
+		towerControl.belt.set(Math.abs(beltSpeed)); //TODO Check this number
 		Timer.delay(1); //TODO Check this number
 		towerControl.belt.set(0);
 		launchMotor1.set(0);

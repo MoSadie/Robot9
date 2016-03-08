@@ -2,7 +2,7 @@
 package Team4450.Robot9;
 
 import java.lang.Math;
-
+import Team4450.Lib.RobotMath;
 import Team4450.Lib.*;
 import Team4450.Lib.FestoDA.PCMids;
 import Team4450.Lib.JoyStick.*;
@@ -128,12 +128,24 @@ class Teleop
 			{
     			rightY = rightStick.GetY();		// fwd/back right
     			leftY = leftStick.GetY();		// fwd/back left
+    			
+    			// This corrects stick alignment error when trying to drive straight. 
+    			if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
+    			
+    			if (rightY >0) {
+    				rightY = RobotMath.log(4,rightY+1)+0.5;
+    			} else if (rightY < 0) {
+    				rightY = -RobotMath.log(4, -rightY+1)-0.5;
+    			}
+    			if (leftY >0) {
+    				leftY = RobotMath.log(4,leftY+1)+0.5;
+    			} else if (leftY < 0) {
+    				leftY = -RobotMath.log(4, -leftY+1)-0.5;
+    			}
 			}
 
 			LCD.printLine(4, "leftY=%.4f  rightY=%.4f", leftY, rightY);
 
-			// This corrects stick alignment error when trying to drive straight. 
-			if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
 			
 			// Set motors.
 
@@ -312,7 +324,7 @@ class Teleop
 			//Changes State of the piston
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
-				robot.towerControl.shoot.fire(1);
+				robot.towerControl.shoot.fire(1,1);
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_RIGHT))
 				if (joyStickEvent.button.latchedState)
