@@ -3,11 +3,13 @@ package Team4450.Robot9;
 
 import java.lang.Math;
 import Team4450.Lib.RobotMath;
+import Team4450.Robot9.Tower.Pickup.BeltStates;
 import Team4450.Lib.*;
 import Team4450.Lib.FestoDA.PCMids;
 import Team4450.Lib.JoyStick.*;
 import Team4450.Lib.LaunchPad.*;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.networktables.*;
@@ -17,7 +19,7 @@ class Teleop
 	private final Robot 		robot;
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
-	private final FestoDA		shifterValve, ptoValve, valve3, valve4, rampValve;
+	private final FestoDA		shifterValve, ptoValve, rampValve;
 	private boolean				ptoMode = false;
 	//private final RevDigitBoard	revBoard = new RevDigitBoard();
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
@@ -32,9 +34,6 @@ class Teleop
 		
 		shifterValve = new FestoDA(2);
 		ptoValve = new FestoDA(0);
-
-		valve3 = new FestoDA(4);
-		valve4 = new FestoDA(6);
 		
 		rampValve = new FestoDA(PCMids.PCM_ONE, 0);
 	}
@@ -51,8 +50,6 @@ class Teleop
 		if (launchPad != null) launchPad.dispose();
 		if (shifterValve != null) shifterValve.dispose();
 		if (ptoValve != null) ptoValve.dispose();
-		if (valve3 != null) valve3.dispose();
-		if (valve4 != null) valve4.dispose();
 		if (rampValve != null) rampValve.dispose();
 		//if (revBoard != null) revBoard.dispose();
 		//if (hallEffectSensor != null) hallEffectSensor.free();
@@ -74,9 +71,7 @@ class Teleop
 
 		shifterLow();
 		ptoDisable();
-		
-		valve3.SetA();
-		valve4.SetA();
+	
 		
 		rampValve.SetA();
 		
@@ -96,12 +91,15 @@ class Teleop
         //leftStick.Start();
         
 		rightStick = new JoyStick(robot.rightStick, "RightStick", JoyStickButtonIDs.TOP_LEFT, this);
-        rightStick.addJoyStickEventListener(new RightStickListener());
+        rightStick.AddButton(JoyStickButtonIDs.TRIGGER);
+		rightStick.addJoyStickEventListener(new RightStickListener());
         rightStick.Start();
         
 		utilityStick = new JoyStick(robot.utilityStick, "UtilityStick", JoyStickButtonIDs.TOP_LEFT, this);
 		utilityStick.AddButton(JoyStickButtonIDs.TRIGGER);
 		utilityStick.AddButton(JoyStickButtonIDs.TOP_RIGHT);
+		utilityStick.AddButton(JoyStickButtonIDs.TOP_MIDDLE);
+		utilityStick.AddButton(JoyStickButtonIDs.TOP_BACK);
         utilityStick.addJoyStickEventListener(new UtilityStickListener());
         utilityStick.Start();
         
@@ -130,7 +128,7 @@ class Teleop
     			leftY = leftStick.GetY();		// fwd/back left
     			
     			// This corrects stick alignment error when trying to drive straight. 
-    			if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
+    			//if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
     			
     			if (rightY >0) {
     				rightY = RobotMath.log(4,rightY+1)+0.5;
@@ -281,6 +279,17 @@ class Teleop
 	    {
 			Util.consoleLog("%s, latchedState=%b", joyStickEvent.button.id.name(),  joyStickEvent.button.latchedState);
 			
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
+				if (joyStickEvent.button.latchedState) {
+					robot.headLight.set(Relay.Value.kOn);
+					SmartDashboard.putBoolean("Light", true);
+				}
+				else {
+					robot.headLight.set(Relay.Value.kOff);
+					SmartDashboard.putBoolean("Light", false);
+				}
+			
+					
 			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_LEFT))
@@ -324,7 +333,7 @@ class Teleop
 			//Changes State of the piston
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER))
-				robot.towerControl.shoot.fire(1,1);
+				robot.towerControl.shoot.fire();
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_RIGHT))
 				if (joyStickEvent.button.latchedState)
@@ -332,13 +341,24 @@ class Teleop
 				else
 					robot.towerControl.belt.set(0);
 			
-			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_MIDDLE))
+				if (joyStickEvent.button.latchedState)
+					robot.towerControl.pickup.toggleBelt(BeltStates.IN);
+				else
+					robot.towerControl.pickup.toggleBelt(BeltStates.STOP);
+			
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_BACK))
+				if (joyStickEvent.button.latchedState)
+					robot.towerControl.pickup.toggleBelt(BeltStates.OUT);
+				else
+					robot.towerControl.pickup.toggleBelt(BeltStates.STOP);
+			
 			
 			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TOP_LEFT))
 				if (joyStickEvent.button.latchedState)
-					((CameraFeed) robot.cameraThread).ChangeCamera(((CameraFeed) robot.cameraThread).cam2);
+					robot.towerControl.shoot.manualFire(true);
 				else
-					((CameraFeed) robot.cameraThread).ChangeCamera(((CameraFeed) robot.cameraThread).cam1);
+					robot.towerControl.shoot.manualFire(false);
 	    }
 
 	    public void ButtonUp(JoyStickEvent joyStickEvent) 

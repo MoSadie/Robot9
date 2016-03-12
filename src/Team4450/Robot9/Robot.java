@@ -1,6 +1,6 @@
 // 2016 competition robot code.
 // Cleaned up and reorganized in preparation for 2016.
-// For Robot "U.S.S. Kelvin" built for FRC game "First Stronghold".
+// For Robot "USS Kelvin" built for FRC game "First Stronghold".
 
 package Team4450.Robot9;
 
@@ -18,8 +18,11 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,11 +33,12 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-2.23.16-02";
+  static final String  	PROGRAM_NAME = "SWF9-3.12.16-12";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
   Talon					LFPwmTalon, LRPwmTalon, RFPwmTalon, RRPwmTalon;
+  public SpeedController		belt;
   RobotDrive      		robotDrive;
   
   final Joystick        utilityStick = new Joystick(2);	// 0 old ds configuration
@@ -43,7 +47,10 @@ public class Robot extends SampleRobot
   final Joystick		launchPad = new Joystick(3);
   
   final Compressor		compressor = new Compressor(0);
+  final Compressor		compressor1 = new Compressor(1);
 
+  public Relay			headLight = new Relay(0, Relay.Direction.kForward);
+  
   public Properties		robotProperties;
 	
   //AxisCamera			camera = null;
@@ -69,7 +76,7 @@ public class Robot extends SampleRobot
 
   //public final NetworkTable grip = NetworkTable.getTable("GRIP");
   
- 
+  final AnalogGyro		gyro = new AnalogGyro(0); 
   public Robot() throws IOException
   {	
 	// Set up our custom logger.
@@ -88,7 +95,6 @@ public class Robot extends SampleRobot
 
         // IP Camera object used for vision processing.
         //camera = AxisCamera.getInstance(CAMERA_IP);
-        towerControl = new TowerControl(this);
         Util.consoleLog("%s %s", PROGRAM_NAME, "end");
     }
     catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
@@ -115,7 +121,12 @@ public class Robot extends SampleRobot
    		// Reset PDB sticky faults.
       
    		PowerDistributionPanel PDP = new PowerDistributionPanel();
-   		PDP.clearStickyFaults();	
+   		PDP.clearStickyFaults();
+   		
+   		// Reset PCM stickey faults.
+   		
+   		compressor.clearAllPCMStickyFaults();
+   		compressor1.clearAllPCMStickyFaults();
 
    		// Configure motor controllers and RobotDrive.
         // Competition robot uses CAN Talons clone uses PWM Talons.
@@ -175,7 +186,8 @@ public class Robot extends SampleRobot
         //    e.printStackTrace(Util.logPrintStream);
         //}
 
-            
+   		towerControl = new TowerControl(this);
+   		
    		Util.consoleLog("end");
     }
     catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
@@ -309,6 +321,8 @@ public class Robot extends SampleRobot
 	  RSlaveCanTalon = new CANTalon(6);
 	  
 	  robotDrive = new RobotDrive(LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon);
+	  
+	  belt = new CANTalon(7);
 
       // Initialize CAN Talons and write status to log so we can verify
       // all the talons are connected.
@@ -318,6 +332,7 @@ public class Robot extends SampleRobot
       InitializeCANTalon(RRCanTalon);
       InitializeCANTalon(LSlaveCanTalon);
       InitializeCANTalon(RSlaveCanTalon);
+      InitializeCANTalon((CANTalon) belt);
       
       // Configure slave CAN Talons to follow the front L & R Talons.
       LSlaveCanTalon.changeControlMode(TalonControlMode.Follower);
@@ -331,12 +346,15 @@ public class Robot extends SampleRobot
   {
 	  Util.consoleLog();
 
-	  LFPwmTalon = new Talon(1);
-	  LRPwmTalon = new Talon(2);
-	  RFPwmTalon = new Talon(3);
-	  RRPwmTalon = new Talon(4);
+	  LFPwmTalon = new Talon(3);
+	  LRPwmTalon = new Talon(4);
+	  RFPwmTalon = new Talon(5);
+	  RRPwmTalon = new Talon(6);
 	  
 	  robotDrive = new RobotDrive(LFPwmTalon, LRPwmTalon, RFPwmTalon, RRPwmTalon);
+	  
+	  belt= new Talon(7);
+	  if (belt == null) {Util.consoleLog("Belt is null in robot.");}
   }
   
 /** Initialize and Log status indication from CANTalon. If we see an exception
@@ -353,14 +371,14 @@ public class Robot extends SampleRobot
   }
   public boolean isComp(){
 	  try {
-	  return robotProperties.getProperty("RobotID").equals("comp");
+	  return robotProperties.getProperty("RobotId").equals("comp");
 	  }
 	  catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 	  return false;
   }
   public boolean isClone(){
 	  try {
-	  return robotProperties.getProperty("RobotID").equals("clone");
+	  return robotProperties.getProperty("RobotId").equals("clone");
 	  }
 	  catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 	  return false;

@@ -13,32 +13,22 @@ public class TowerControl extends Thread {
 	public Shooter shoot;
 	public Pickup pickup;
 	public FestoDA pickupPiston;
-	public CANTalon belt;
-	public Talon launchMotor1 = new Talon(0);
-	public Talon launchMotor2 = new Talon(1);
+	public SpeedController belt;
+	public Talon launchMotor1;
+	public Talon launchMotor2;
 	public FestoDA shootPiston;
 	public DigitalInput ballCheck;
 	public boolean initDone;
+	private Robot robot;
 	public TowerControl(Robot robot){
 		try {
+		this.robot = robot;
 		pickupPiston = new FestoDA(6);
-		belt = new CANTalon(7);
-		robot.InitializeCANTalon(belt);
 		shootPiston = new FestoDA(4);
-		Util.consoleLog("Launch Motors init");
-		//if (robot.isComp()) {
-		//launchMotor1 = new Talon(0);
-		//launchMotor2 = new Talon(1);
-		Util.consoleLog("Launch Motors end");
-		//} else if (robot.isClone()) {
-		//	launchMotor1 = new Talon(7);
-		//	launchMotor2= new Talon(8);
-		//}
 		Util.consoleLog("DigInput");
 		ballCheck = new DigitalInput(0);
 		Util.consoleLog("DigInput end");
-		shoot = new Shooter(robot);
-		pickup = new Pickup(robot);
+		this.belt = robot.belt;
 		} catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 		
 	}
@@ -51,6 +41,18 @@ public class TowerControl extends Thread {
 			initDone = true;
 			pickupPiston.SetB();
 			shootPiston.SetA();
+			if (robot.isComp()) {
+				robot.InitializeCANTalon((CANTalon) belt);
+				launchMotor1 = new Talon(0);
+				launchMotor2 = new Talon(1);
+				Util.consoleLog("Launch Motors end");
+			}
+			else if (robot.isClone()) {
+				launchMotor1 = new Talon(1);
+				launchMotor2= new Talon(2);
+			}
+			shoot = new Shooter(robot);
+			pickup = new Pickup(robot);
 		}
 	}
 	

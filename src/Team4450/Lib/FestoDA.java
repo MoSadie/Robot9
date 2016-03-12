@@ -62,7 +62,7 @@ public class FestoDA
 	 * @param moduleNumber The CAN Device ID that the PCM is on.
 	 */
 	public FestoDA(PCMids moduleNumber, int port) {
-		Util.consoleLog("Port=%d ModuleNumber=%d", port, moduleNumber);
+		Util.consoleLog("Port=%d ModuleNumber=%d", port, moduleNumber.value);
 		
 		valveOpenSide = new Solenoid(moduleNumber.value, port);
 		valveCloseSide = new Solenoid(moduleNumber.value, port+1);

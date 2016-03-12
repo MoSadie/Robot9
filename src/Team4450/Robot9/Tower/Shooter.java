@@ -3,39 +3,52 @@ package Team4450.Robot9.Tower;
 import Team4450.Lib.*;
 import Team4450.Robot9.*;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
+	private Robot robot;
 	private Talon launchMotor1;
 	private Talon launchMotor2;
 	private TowerControl towerControl;
-	private FestoDA shootPiston;
+	private FestoDA hoodPiston;
 	
 	Shooter(Robot robot) {
+		try {
+		this.robot = robot;
 		towerControl = robot.towerControl;
 		launchMotor1 = towerControl.launchMotor1;
 		launchMotor2 = towerControl.launchMotor2;
-		shootPiston = towerControl.shootPiston;
+		hoodPiston = towerControl.shootPiston;
+		} catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 	}
 	
 	/**
-	 * This fires the launcher on the robot.
-	 * @param launchSpeed The speed to fire the ball at. (Range: -1 to 1)
-	 * @param beltSpeed The speed to move the belt at. (Range: 0 to 1)
+	 * Allows you to manually control when the shooter motors spins up.
+	 * @param onOrOff Sets the motor On (True) or Off (False)
 	 */
-	public void fire(double launchSpeed, double beltSpeed) {
-		if (Math.abs(launchSpeed) > 1) {
-			Util.consoleLog("Speed not set correctly, expected between -1 and 1, got " + launchSpeed);
-			return;
+	public void manualFire(boolean onOrOff) {
+		if (onOrOff) {
+			SmartDashboard.putBoolean("ShooterMotor", true);
+			launchMotor1.set(1);
+			launchMotor2.set(1);
+		} else if (!onOrOff) {
+			SmartDashboard.putBoolean("ShooterMotor", false);
+			launchMotor1.set(0);
+			launchMotor2.set(0);
+			robot.headLight.set(Relay.Value.kOff);
 		}
+	}
+	
+	
+	/**
+	 * This fires the launcher on the robot.
+	 */
+	public void fire() {
 		towerControl.pickupPiston.SetA();
-		launchMotor1.set(launchSpeed);
-		launchMotor2.set(launchSpeed);
-		Timer.delay(2);
-		towerControl.belt.set(Math.abs(beltSpeed)); //TODO Check this number
+		towerControl.belt.set(1); //TODO Check this number
 		Timer.delay(1); //TODO Check this number
 		towerControl.belt.set(0);
-		launchMotor1.set(0);
-		launchMotor2.set(0);
+		manualFire(false);
 	}
 	/**
 	 * This adjusts the angle of the shooter tube. Accepts the strings 'retract' or 'extend'
@@ -43,11 +56,11 @@ public class Shooter {
 	 */
 	public void adjustAngle(String Position) {
 		if (Position == "retract") {
-			shootPiston.SetA();
+			hoodPiston.SetA();
 			return;
 		}
 		if (Position == "extend") {
-			shootPiston.SetB();
+			hoodPiston.SetB();
 			return;
 		}
 	}
