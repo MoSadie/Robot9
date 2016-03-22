@@ -112,9 +112,9 @@ public class Autonomous
 	 			case 4: //Just lanuch pre-loaded ball
 	 				robot.towerControl.shoot.adjustAngle("extend");
 	 				robot.towerControl.shoot.manualFire(true);
-	 				Timer.delay(1);
+	 				Timer.delay(7);
 	 				robot.towerControl.belt.set(-1);
-	 				Timer.delay(3);
+	 				Timer.delay(1);
 	 				robot.towerControl.shoot.manualFire(false);
 	 				robot.towerControl.belt.set(0);
 	 				break;

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
-//import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +21,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.*;
 
 /**
@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-3.12.16-12";
+  static final String  	PROGRAM_NAME = "SWF9-3.22.16-01";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
@@ -69,12 +69,10 @@ public class Robot extends SampleRobot
   static final int     	IP_CAMERA = 3;
   
   public TowerControl towerControl;
-  //Test GRIP Code
-  //private final static String[] GRIP_ARGS = new String[] {
-  //        "/usr/local/frc/JRE/bin/java", "-jar",
-  //        "/home/lvuser/grip.jar", "/home/lvuser/project.grip" };
-
-  //public final NetworkTable grip = NetworkTable.getTable("GRIP");
+ 
+  public final NetworkTable grip = NetworkTable.getTable("GRIP");
+  
+  public Process gripProcess;
   
   final AnalogGyro		gyro = new AnalogGyro(0); 
   public Robot() throws IOException
@@ -179,12 +177,12 @@ public class Robot extends SampleRobot
    		//monitorDistanceThread.start();
    		
    		/* Run GRIP in a new process */
-        //try {
-        //    new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-        //} 
-        //catch (IOException e) {
-        //    e.printStackTrace(Util.logPrintStream);
-        //}
+        try {
+            gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+        } 
+        catch (IOException e) {
+            e.printStackTrace(Util.logPrintStream);
+        }
 
    		towerControl = new TowerControl(this);
    		

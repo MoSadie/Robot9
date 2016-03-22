@@ -130,16 +130,8 @@ class Teleop
     			// This corrects stick alignment error when trying to drive straight. 
     			//if (Math.abs(rightY - leftY) < 0.2) rightY = leftY;
     			
-    			if (rightY >0) {
-    				rightY = RobotMath.log(4,rightY+1)+0.5;
-    			} else if (rightY < 0) {
-    				rightY = -RobotMath.log(4, -rightY+1)-0.5;
-    			}
-    			if (leftY >0) {
-    				leftY = RobotMath.log(4,leftY+1)+0.5;
-    			} else if (leftY < 0) {
-    				leftY = -RobotMath.log(4, -leftY+1)-0.5;
-    			}
+    			rightY = RobotMath.logStick(rightY);
+    			leftY = RobotMath.logStick(leftY);
 			}
 
 			LCD.printLine(4, "leftY=%.4f  rightY=%.4f", leftY, rightY);
