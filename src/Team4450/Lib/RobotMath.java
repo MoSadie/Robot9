@@ -22,12 +22,14 @@ public class RobotMath {
 	 * @return A double between -1 and 1.
 	 */
 	public static double logStick(double joystickValue){
-		double base = 4;
+		double base = Math.pow(2, 1/3)+Math.pow(2, 1/3);
+		Util.consoleLog("%f",base); //TODO Remove ME!
+		double minPower = 0;
 		
 		if (joystickValue >0) {
-			joystickValue = RobotMath.log(base,joystickValue+1)+0.5;
+			joystickValue = RobotMath.log(base,joystickValue+1)+minPower;
 		} else if (joystickValue < 0) {
-			joystickValue = -RobotMath.log(base, -joystickValue+1)-0.5;
+			joystickValue = -RobotMath.log(base, -joystickValue+1)-minPower;
 		}
 		
 		return joystickValue;

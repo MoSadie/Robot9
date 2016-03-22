@@ -19,7 +19,7 @@ class Teleop
 	private final Robot 		robot;
 	private JoyStick			rightStick, leftStick, utilityStick;
 	private LaunchPad			launchPad;
-	private final FestoDA		shifterValve, ptoValve, rampValve;
+	private final FestoDA		shifterValve, ptoValve, brakeValve;
 	private boolean				ptoMode = false;
 	//private final RevDigitBoard	revBoard = new RevDigitBoard();
 	//private final DigitalInput	hallEffectSensor = new DigitalInput(0);
@@ -35,7 +35,7 @@ class Teleop
 		shifterValve = new FestoDA(2);
 		ptoValve = new FestoDA(0);
 		
-		rampValve = new FestoDA(PCMids.PCM_ONE, 0);
+		brakeValve = new FestoDA(PCMids.PCM_ONE, 0);
 	}
 
 	// Free all objects that need it.
@@ -50,7 +50,7 @@ class Teleop
 		if (launchPad != null) launchPad.dispose();
 		if (shifterValve != null) shifterValve.dispose();
 		if (ptoValve != null) ptoValve.dispose();
-		if (rampValve != null) rampValve.dispose();
+		if (brakeValve != null) brakeValve.dispose();
 		//if (revBoard != null) revBoard.dispose();
 		//if (hallEffectSensor != null) hallEffectSensor.free();
 	}
@@ -71,9 +71,10 @@ class Teleop
 
 		shifterLow();
 		ptoDisable();
+		robot.towerControl.setBelt("up");
 	
 		
-		rampValve.SetA();
+		brakeValve.SetA();
 		
 		// Configure LaunchPad and Joystick event handlers.
 		
@@ -133,8 +134,8 @@ class Teleop
     			rightY = RobotMath.logStick(rightY);
     			leftY = RobotMath.logStick(leftY);
 			}
-
-			LCD.printLine(4, "leftY=%.4f  rightY=%.4f", leftY, rightY);
+			LCD.printLine(4, "Old: leftY=%.4f  rightY=%.4f", leftStick.GetY(), rightStick.GetY());
+			LCD.printLine(5, "New: leftY=%.4f  rightY=%.4f", leftY, rightY);
 
 			
 			// Set motors.
@@ -202,24 +203,8 @@ class Teleop
 	    public void ButtonDown(LaunchPadEvent launchPadEvent) 
 	    {
 			Util.consoleLog("%s, latchedState=%b", launchPadEvent.control.id.name(),  launchPadEvent.control.latchedState);
-			
-			// Change which USB camera is being served by the RoboRio when using dual usb cameras.
-			
-			if (launchPadEvent.control.id.equals(LaunchPad.LaunchPadControlIDs.BUTTON_BLACK))
-				if (launchPadEvent.control.latchedState)
-					robot.cameraThread.ChangeCamera(robot.cameraThread.cam2);
-				else
-					robot.cameraThread.ChangeCamera(robot.cameraThread.cam1);
-	
+				
 			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE)
-			{
-				if (launchPadEvent.control.latchedState)
-    				shifterHigh();
-    			else
-    				shifterLow();
-			}
-
-			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_YELLOW)
 			{
 				if (launchPadEvent.control.latchedState)
 				{
@@ -229,12 +214,22 @@ class Teleop
     			else
     				ptoDisable();
 			}
+
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_YELLOW || launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLACK)
+			{
+				if (launchPadEvent.control.latchedState)
+				{
+					robot.towerControl.shoot.adjustAngle("extend");;
+				}
+    			else
+    				robot.towerControl.shoot.adjustAngle("retract");
+			}
 			
 			if (launchPadEvent.control.id.equals(LaunchPadControlIDs.BUTTON_GREEN)) {
 				if (launchPadEvent.control.latchedState) 
-					rampValve.SetB();
+					brakeValve.SetB();
 				else
-					rampValve.SetA();
+					brakeValve.SetA();
 			}
 			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				//Get published values from GRIP using NetworkTables
@@ -304,7 +299,12 @@ class Teleop
 	{
 	    public void ButtonDown(JoyStickEvent joyStickEvent) 
 	    {
-			Util.consoleLog("%s, latchedState=%b", joyStickEvent.button.id.name(),  joyStickEvent.button.latchedState);
+			if (joyStickEvent.button.id.equals(JoyStickButtonIDs.TRIGGER)) {
+				if (joyStickEvent.button.latchedState)
+    				shifterHigh();
+    			else
+    				shifterLow();
+			}
 			
 	    }
 

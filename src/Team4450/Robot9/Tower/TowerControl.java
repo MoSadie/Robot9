@@ -56,7 +56,7 @@ public class TowerControl extends Thread {
 		}
 	}
 	
-	void setBelt(String position) {
+	public void setBelt(String position) {
 		if (position.toLowerCase() == "down") {
 			pickupPiston.SetB();
 		}

@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-3.22.16-01";
+  static final String  	PROGRAM_NAME = "SWF9-3.22.16-02";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
@@ -177,13 +177,13 @@ public class Robot extends SampleRobot
    		//monitorDistanceThread.start();
    		
    		/* Run GRIP in a new process */
-        try {
-            gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-        } 
-        catch (IOException e) {
-            e.printStackTrace(Util.logPrintStream);
-        }
-
+        //try {
+        //    gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+        //} 
+        //catch (IOException e) {
+        //   e.printStackTrace(Util.logPrintStream);
+        //}
+   		gripProcess = null;
    		towerControl = new TowerControl(this);
    		
    		Util.consoleLog("end");
