@@ -1,14 +1,12 @@
 
 package Team4450.Robot9;
 
-import java.lang.Math;
 import Team4450.Lib.RobotMath;
 import Team4450.Robot9.Tower.Pickup.BeltStates;
 import Team4450.Lib.*;
 import Team4450.Lib.FestoDA.PCMids;
 import Team4450.Lib.JoyStick.*;
 import Team4450.Lib.LaunchPad.*;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,6 +65,8 @@ class Teleop
 		LCD.printLine(1, "Mode: OperatorControl");
 		LCD.printLine(2, "All=%s, Start=%d, FMS=%b", robot.alliance.name(), robot.location, robot.ds.isFMSAttached());
 		
+		Grip.startGrip();
+		
 		// Initial setting of air valves.
 
 		shifterLow();
@@ -121,6 +121,7 @@ class Teleop
 			if (ptoMode)
 			{
 				rightY = utilityStick.GetY();
+				//if (rightY > 0 && climbUpSwitch.get() && limitSwitchEnabled) rightY = 0; 
 				leftY = rightY;
 			} 
 			else
@@ -231,12 +232,10 @@ class Teleop
 				else
 					brakeValve.SetA();
 			}
-			/* if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
+			if (launchPadEvent.control.id == LaunchPadControlIDs.BUTTON_BLUE) {
 				//Get published values from GRIP using NetworkTables
-		        for (double centerX : grip.getNumberArray("myContoursReport/centerX", new double[0])) {
-		            System.out.println("Got contour with x=" + centerX);
-		        }
-			} */
+		        Grip.getContoursReport().centerX.toString();
+			}
 	    }
 	    
 	    public void ButtonUp(LaunchPadEvent launchPadEvent) 

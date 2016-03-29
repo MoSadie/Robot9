@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "SWF9-3.22.16-02";
+  static final String  	PROGRAM_NAME = "SWF9-3.24.16-02";
 
   // Motor CAN ID/PWM port assignments (1=left-front, 2=left-rear, 3=right-front, 4=right-rear)
   CANTalon				LFCanTalon, LRCanTalon, RFCanTalon, RRCanTalon, LSlaveCanTalon, RSlaveCanTalon;
@@ -70,9 +70,9 @@ public class Robot extends SampleRobot
   
   public TowerControl towerControl;
  
-  public final NetworkTable grip = NetworkTable.getTable("GRIP");
+  //public final NetworkTable grip = NetworkTable.getTable("GRIP");
   
-  public Process gripProcess;
+  //public Process gripProcess;
   
   final AnalogGyro		gyro = new AnalogGyro(0); 
   public Robot() throws IOException
@@ -121,7 +121,7 @@ public class Robot extends SampleRobot
    		PowerDistributionPanel PDP = new PowerDistributionPanel();
    		PDP.clearStickyFaults();
    		
-   		// Reset PCM stickey faults.
+   		// Reset PCM sticky faults.
    		
    		compressor.clearAllPCMStickyFaults();
    		compressor1.clearAllPCMStickyFaults();
@@ -168,22 +168,14 @@ public class Robot extends SampleRobot
 
    		// Start camera server using our class for dual usb cameras.
       
-   		cameraThread = new CameraFeed(this);
-   		cameraThread.start();
+   		//cameraThread = new CameraFeed(this);
+   		//cameraThread.start();
      
    		// Start thread to monitor distance sensor.
    		
    		//monitorDistanceThread = new MonitorDistanceMBX(this);
    		//monitorDistanceThread.start();
    		
-   		/* Run GRIP in a new process */
-        //try {
-        //    gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-        //} 
-        //catch (IOException e) {
-        //   e.printStackTrace(Util.logPrintStream);
-        //}
-   		gripProcess = null;
    		towerControl = new TowerControl(this);
    		
    		Util.consoleLog("end");
@@ -206,7 +198,9 @@ public class Robot extends SampleRobot
 		  SmartDashboard.putBoolean("Teleop Mode", false);
 		  SmartDashboard.putBoolean("PTO", false);
 		  SmartDashboard.putBoolean("FMS", ds.isFMSAttached());
-
+		  
+		  Grip.stopGrip();
+		  
 		  Util.consoleLog("end");
 	  }
 	  catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}

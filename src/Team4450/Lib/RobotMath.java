@@ -23,7 +23,6 @@ public class RobotMath {
 	 */
 	public static double logStick(double joystickValue){
 		double base = Math.pow(2, 1/3)+Math.pow(2, 1/3);
-		Util.consoleLog("%f",base); //TODO Remove ME!
 		double minPower = 0;
 		
 		if (joystickValue >0) {

@@ -79,7 +79,7 @@ public final class Grip
 		try
 		{
 			gripTable.putBoolean("run", true);
-			//gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+			if (gripProcess == null) gripProcess = new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
 		}
 		catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
 	}
@@ -89,12 +89,14 @@ public final class Grip
 		Util.consoleLog();
 		
 		gripTable.putBoolean("run", false);
-		
-		//if (gripProcess != null) gripProcess.destroy();
-	  
-		//gripProcess = null;
 	}
- 
+	
+	public static void killGrip()
+	{
+		if (gripProcess != null) gripProcess.destroy();
+		gripProcess = null;
+	}
+	
 	public static ContoursReport getContoursReport()
 	{
 		ContoursReport report = new ContoursReport();
