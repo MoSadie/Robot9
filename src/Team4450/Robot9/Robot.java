@@ -8,21 +8,10 @@ import java.io.IOException;
 import java.util.Properties;
 import Team4450.Robot9.Tower.*;
 import Team4450.Lib.*;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -69,6 +58,7 @@ public class Robot extends SampleRobot
   static final int     	IP_CAMERA = 3;
   
   public TowerControl towerControl;
+  public SendableChooser autoChoice;
  
   //public final NetworkTable grip = NetworkTable.getTable("GRIP");
   
@@ -177,6 +167,8 @@ public class Robot extends SampleRobot
    		//monitorDistanceThread.start();
    		
    		towerControl = new TowerControl(this);
+   		autoChoice = displayAutonomousOptions();
+   		
    		
    		Util.consoleLog("end");
     }
@@ -374,5 +366,17 @@ public class Robot extends SampleRobot
 	  }
 	  catch (Exception e) {e.printStackTrace(Util.logPrintStream);}
 	  return false;
+  }
+  public SendableChooser displayAutonomousOptions() {
+	  Util.consoleLog();
+	  SendableChooser autoChoice = new SendableChooser();
+	  autoChoice.addDefault("Do Nothing", 0);
+	  autoChoice.addObject("Drive Forward to defense and stop", 1);
+	  autoChoice.addObject("Cross Rough Terrain", 2);
+	  autoChoice.addObject("Cross Rock Wall", 3);
+	  autoChoice.addObject("Shoot from SpyBot Position", 4);
+	  autoChoice.addObject("Test Gyro", 5);
+	  SmartDashboard.putData("SmartDashboard", autoChoice);
+	  return autoChoice;
   }
 }

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Autonomous
 {
 	private final Robot	robot;
-	private final int	program = (int) SmartDashboard.getNumber("AutoProgramSelect");
+	private final int	program;// = (int) SmartDashboard.getNumber("AutoProgramSelect");
 	private final FestoDA gearboxShift, powerTakeoff;
 	
 	// encoder is plugged into dio port 2 - orange=+5v blue=signal, dio port 3 black=gnd yellow=signal. 
@@ -21,6 +21,7 @@ public class Autonomous
 		Util.consoleLog();
 		
 		this.robot = robot;
+		program = (int) robot.autoChoice.getSelected();
 		gearboxShift = new FestoDA(0);
 		powerTakeoff = new FestoDA(2);
 	}
