@@ -11,23 +11,43 @@ import edu.wpi.first.wpilibj.Timer;
 
 /**
  * USB camera feed task. Runs as a thread separate from Robot class.
+ * Manages one or more usb cameras feeding their images to the 
+ * CameraServer class to send to the DS.
+ * Uses NI image library to access cameras directly.
  */
 
 public class CameraFeed extends Thread
 {
-	public	int		 		cam1 = -1, cam2 = -1;
-	public	double			frameRate = 30;		// frames per second
-	private int 			currentCamera;
-	private Image 			frame;
-	private CameraServer 	server;
-	private boolean			cameraChangeInProgress;
-	private Robot			robot;
+	public	int		 			cam1 = -1, cam2 = -1;
+	public	double				frameRate = 30;		// frames per second
+	private int 				currentCamera;
+	private Image 				frame;
+	private CameraServer 		server;
+	private boolean				cameraChangeInProgress;
+	private Robot				robot;
+	private static CameraFeed	cameraFeed;
+
+	// Create single instance of this class and return that single instance to any callers.
 	
 	/**
+	 * Get a reference to global CameraFeed object.
 	 * @param robot Robot class instance.
+	 * @return Reference to global CameraFeed object.
 	 */
+	  
+	public static CameraFeed getInstance(Robot robot) 
+	{
+		Util.consoleLog();
+		
+		if (cameraFeed == null) cameraFeed = new CameraFeed(robot);
+	    
+	    return cameraFeed;
+	}
 
-	public CameraFeed(Robot robot)
+	// Private constructor means callers must use getInstance.
+	// This is the singleton class model.
+	
+	private CameraFeed(Robot robot)
 	{
 		try
 		{
@@ -43,22 +63,22 @@ public class CameraFeed extends Thread
     		
     		// Camera initialization based on robotid from properties file.
     		
-    		if (robot.robotProperties.getProperty("RobotId").equals("comp"))
+    		if (robot.isComp)
     		{
         		try
         		{
-        			cam1 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        			cam1 = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         		}
         		catch (Exception e) {}
         		
         		try
         		{
-        			cam2 = NIVision.IMAQdxOpenCamera("cam3", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        			cam2 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         		}
         		catch (Exception e) {}
     		}
     		
-    		if (robot.robotProperties.getProperty("RobotId").equalsIgnoreCase("clone"))
+    		if (robot.isClone)
     		{
     			Util.consoleLog("in clone");
     			
@@ -85,7 +105,7 @@ public class CameraFeed extends Thread
             
             ChangeCamera(currentCamera);
 		}
-		catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
+		catch (Throwable e) {Util.logException(e);}
 	}
 	
 	// Run thread to read and feed camera images. Called by Thread.start().
@@ -98,11 +118,22 @@ public class CameraFeed extends Thread
 			while (true)
 			{
 				if (!cameraChangeInProgress) UpdateCameraImage();
-				
+		
 				Timer.delay(1 / frameRate);
 			}
 		}
-		catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
+		catch (Throwable e) {Util.logException(e);}
+	}
+	
+	/**
+	 * Get last image read from camera.
+	 * @return Image Last image from camera.
+	 */
+	public Image CurrentImage()
+	{
+		Util.consoleLog();
+		
+		return frame;
 	}
 	
 	/**
@@ -116,7 +147,7 @@ public class CameraFeed extends Thread
     
     		if (currentCamera != -1) NIVision.IMAQdxStopAcquisition(currentCamera);
 		}
-		catch (Throwable e)	{e.printStackTrace(Util.logPrintStream);}
+		catch (Throwable e)	{Util.logException(e);}
 	}
 	
 	/**
@@ -143,7 +174,7 @@ public class CameraFeed extends Thread
         	
         	cameraChangeInProgress = false;
 		}
-		catch (Throwable e)	{e.printStackTrace(Util.logPrintStream);}
+		catch (Throwable e)	{Util.logException(e);}
     }
     
 	 // Get an image from current camera and give it to the server.
@@ -158,6 +189,6 @@ public class CameraFeed extends Thread
             	server.setImage(frame);
     		}
 		}
-		catch (Throwable e) {e.printStackTrace(Util.logPrintStream);}
+		catch (Throwable e) {Util.logException(e);}
     }
 }
